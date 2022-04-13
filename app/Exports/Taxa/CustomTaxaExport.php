@@ -62,12 +62,24 @@ class CustomTaxaExport extends BaseExport
                 'value' => 'conservation_legislations',
             ],
             [
+                'label' => trans('labels.taxa.conservation_documents'),
+                'value' => 'conservation_documents',
+            ],
+            [
                 'label' => trans('labels.taxa.red_lists'),
                 'value' => 'red_lists',
             ],
             [
                 'label' => trans('labels.taxa.uses_atlas_codes'),
                 'value' => 'uses_atlas_codes',
+            ],
+            [
+                'label' => trans('labels.taxa.synonyms'),
+                'value' => 'synonyms',
+            ],
+            [
+                'label' => trans('labels.taxa.countries'),
+                'value' => 'countries',
             ],
         ])->concat($locales->map(function ($locale, $localeCode) {
             $nativeName = trans('labels.taxa.native_name');
@@ -101,6 +113,7 @@ class CustomTaxaExport extends BaseExport
 
     /**
      * Extract needed data from item.
+     * All separators must be semicolon with space afterwards ('; ')
      *
      * @param  \App\Taxon  $item
      * @return array
@@ -116,13 +129,15 @@ class CustomTaxaExport extends BaseExport
             'invasive' => $item->invasive ? __('Yes') : __('No'),
             'fe_old_id' => $item->fe_old_id,
             'fe_id' => $item->fe_id,
-            'stages' => $item->stages->map->name_translation->implode(', '),
-            'conservation_legislations' => $item->conservationLegislations->map->name->implode(', '),
-            'conservation_documents' => $item->conservationDocuments->map->name->implode(', '),
+            'stages' => $item->stages->map->name_translation->implode('; '),
+            'conservation_legislations' => $item->conservationLegislations->map->name->implode('; '),
+            'conservation_documents' => $item->conservationDocuments->map->name->implode('; '),
             'red_lists' => $item->redLists->map(function ($redList) {
-                return "{$redList->name} ({$redList->pivot->category})";
+                return "{$redList->name} [{$redList->pivot->category}]";
             })->implode(', '),
             'uses_atlas_codes' => $item->uses_atlas_codes ? __('Yes') : __('No'),
+            'synonyms' => $item->synonyms->map->name->implode('; '),
+            'countries' => $item->countries->map->name->implode('; '),
         ];
 
         foreach ($item->ancestors as $ancestor) {

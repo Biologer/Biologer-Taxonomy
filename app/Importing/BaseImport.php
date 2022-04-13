@@ -9,6 +9,7 @@ use Box\Spout\Reader\ReaderInterface;
 use Box\Spout\Reader\SheetInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Localizable;
 
 abstract class BaseImport
@@ -54,7 +55,7 @@ abstract class BaseImport
      * List of all columns.
      *
      * @param  \App\User|null  $user
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public static function availableColumns($user = null)
     {
@@ -100,7 +101,7 @@ abstract class BaseImport
             'columns' => $request->input('columns', []),
             'path' => $request->file('file')->store('imports'),
             'user_id' => $user->id,
-            'for_user_id' => $user->hasAnyRole(['admin', 'curator']) ? $request->input('user_id') : null,
+            'for_user_id' => $user->hasAnyRole(['admin', 'expert']) ? $request->input('user_id') : null,
             'lang' => app()->getLocale(),
             'has_heading' => $request->input('has_heading', false),
             'options' => $request->input('options', []),
@@ -206,8 +207,9 @@ abstract class BaseImport
      */
     private function makeImportReader()
     {
-        $reader = ReaderEntityFactory::createCSVReader();
-
+        Str::lower(pathinfo($this->import->absolutePath(), PATHINFO_EXTENSION)) == 'xlsx' ?
+            $reader = ReaderEntityFactory::createXLSXReader() :
+            $reader = ReaderEntityFactory::createCSVReader();
         $reader->open($this->import->absolutePath());
 
         return $reader;
@@ -260,7 +262,7 @@ abstract class BaseImport
                 continue;
             }
 
-            $callback($mapper->map($row));
+            $callback($mapper->map($row->toArray()));
         }
     }
 
@@ -385,7 +387,7 @@ abstract class BaseImport
     /**
      * Store import in DB.
      *
-     * @return void
+     * @return Import
      */
     public function store()
     {
@@ -411,6 +413,7 @@ abstract class BaseImport
      *
      * @return void
      */
+    // TODO: Should be able to skip current item if exists and carry on..
     private function storeParsed()
     {
         DB::beginTransaction();
@@ -435,8 +438,8 @@ abstract class BaseImport
     /**
      * Store data from single CSV row.
      *
-     * @param  array  $item
+     * @param  array  $taxon
      * @return void
      */
-    abstract protected function storeSingleItem(array $item);
+    abstract protected function storeSingleItem(array $taxon);
 }

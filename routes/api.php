@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\SynonymsController;
 use App\Http\Controllers\Api\TaxaController;
 use App\Http\Controllers\Api\TaxonExportsController;
+use App\Http\Controllers\Api\TaxonImportsController;
+use App\Http\Controllers\Api\TaxonomyController;
 use App\Http\Controllers\Api\TaxonPublicPhotosController;
 use App\Http\Controllers\Api\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,18 @@ Route::get('groups/{group}/taxa', [GroupTaxaController::class, 'index'])
 
 Route::get('taxa/{taxon}/public-photos', [TaxonPublicPhotosController::class, 'index'])
     ->name('api.taxa.public-photos.index');
+
+Route::post('taxonomy/check', [TaxonomyController::class, 'check'])
+    ->name('api.taxonomy.check');
+
+Route::post('taxonomy/connect', [TaxonomyController::class, 'connect'])
+    ->name('api.taxonomy.connect');
+
+Route::post('taxonomy/disconnect', [TaxonomyController::class, 'disconnect'])
+    ->name('api.taxonomy.disconnect');
+
+Route::post('taxonomy/search', [TaxonomyController::class, 'search'])
+    ->name('api.taxonomy.search');
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     // Taxa
@@ -84,6 +98,16 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 
     Route::get('exports/{export}', [ExportsController::class, 'show'])
         ->name('api.exports.show');
+
+    // Taxa imports
+    Route::post('taxon-imports', [TaxonImportsController::class, 'store'])
+        ->name('api.taxon-imports.store');
+
+    Route::get('taxon-imports/{import}', [TaxonImportsController::class, 'show'])
+        ->name('api.taxon-imports.show');
+
+    Route::get('taxon-imports/{import}/errors', [TaxonImportsController::class, 'errors'])
+        ->name('api.taxon-imports.errors');
 
     // Announcements
     Route::get('announcements', [AnnouncementsController::class, 'index'])
@@ -136,7 +160,6 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     });
 
     Route::prefix('curator')->group(function () {
-
     });
 
     Route::prefix('autocomplete')->group(function () {

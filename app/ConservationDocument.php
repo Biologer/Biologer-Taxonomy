@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ConservationDocument extends Model
 {
-    use HasFactory, Translatable;
+    use HasFactory;
+    use Translatable;
 
     protected $translationForeignKey = 'doc_id';
+
+    protected $hidden = [
+        'created_at', 'updated_at',
+    ];
 
     /**
      * The relations to eager load on every query.
@@ -31,6 +36,20 @@ class ConservationDocument extends Model
      * @var array
      */
     public $translatedAttributes = ['name', 'description'];
+
+    /**
+     * Countries for reference local id's
+     */
+    public function countries()
+    {
+        return $this->belongsToMany(
+            Country::class,
+            'country_conservation_document',
+            'doc_id',
+            'country_id'
+        )
+            ->withPivot('ref_id');
+    }
 
     /**
      * Get translated conservation document name.

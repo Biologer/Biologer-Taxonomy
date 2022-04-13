@@ -17,3 +17,4 @@ yarn-error.log
 /.vagrant
 .php-cs-fixer.cache
 notes.txt
+.editorconfig
