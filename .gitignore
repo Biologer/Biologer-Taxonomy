@@ -16,5 +16,5 @@ yarn-error.log
 /storage/clockwork
 /.vagrant
 .php-cs-fixer.cache
-notes.txt
+notes
 .editorconfig
