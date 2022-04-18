@@ -16,6 +16,7 @@ class RedListSeeder extends Seeder
     {
         RedList::firstOrCreate(['slug' => 'global'])->update([
             'bs' => ['name' => 'Globalna'],
+            'bs-Cyrl' => ['name' => 'Глобална'],
             'en' => ['name' => 'Global'],
             'hr' => ['name' => 'Globalna'],
             'sr' => ['name' => 'Глобална'],
@@ -24,22 +25,16 @@ class RedListSeeder extends Seeder
 
         RedList::firstOrCreate(['slug' => 'europe'])->update([
             'bs' => ['name' => 'Evropa'],
+            'bs-Cyrl' => ['name' => 'Европа'],
             'en' => ['name' => 'Europe'],
             'hr' => ['name' => 'Europa'],
             'sr' => ['name' => 'Европа'],
             'sr-Latn' => ['name' => 'Evropa'],
         ]);
 
-        RedList::firstOrCreate(['slug' => 'serbia'])->update([
-            'bs' => ['name' => 'Srbija'],
-            'en' => ['name' => 'Serbia'],
-            'hr' => ['name' => 'Srbija'],
-            'sr' => ['name' => 'Србија'],
-            'sr-Latn' => ['name' => 'Srbija'],
-        ]);
-
         RedList::firstOrCreate(['slug' => 'balkans'])->update([
             'bs' => ['name' => 'Balkan'],
+            'bs-Cyrl' => ['name' => 'Балкан'],
             'en' => ['name' => 'Balkans'],
             'hr' => ['name' => 'Balkan'],
             'sr' => ['name' => 'Балкан'],
@@ -48,6 +43,7 @@ class RedListSeeder extends Seeder
 
         RedList::firstOrCreate(['slug' => 'croatia'])->update([
             'bs' => ['name' => 'Hrvatska'],
+            'bs-Cyrl' => ['name' => 'Хрватска'],
             'en' => ['name' => 'Croatia'],
             'hr' => ['name' => 'Hrvatska'],
             'sr' => ['name' => 'Хрватска'],
@@ -56,6 +52,7 @@ class RedListSeeder extends Seeder
 
         RedList::firstOrCreate(['slug' => 'eu'])->update([
             'bs' => ['name' => 'Evropska unija'],
+            'bs-Cyrl' => ['name' => 'Европска унија'],
             'en' => ['name' => 'European Union'],
             'hr' => ['name' => 'Europska unija'],
             'sr' => ['name' => 'Европска унија'],
