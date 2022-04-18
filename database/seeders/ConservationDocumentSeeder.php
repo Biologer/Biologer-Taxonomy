@@ -16,6 +16,7 @@ class ConservationDocumentSeeder extends Seeder
     {
         ConservationDocument::firstOrCreate(['slug' => 'pba'])->update([
             'bs' => ['name' => 'PBA', 'description' => 'Odabrana područja za dnevne leptire'],
+            'bs-Cyrl' => ['name' => 'ПБА', 'description' => 'Одабрана подручја за дневне лептире'],
             'en' => ['name' => 'PBA', 'description' => 'Prime Butterfly Areas'],
             'hr' => ['name' => 'PBA', 'description' => 'Odabrana područja za dnevne leptire'],
             'sr' => ['name' => 'ПБА', 'description' => 'Одабрана подручја за дневне лептире'],

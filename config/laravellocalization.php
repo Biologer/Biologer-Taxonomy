@@ -10,6 +10,7 @@ $activeLocales = array_map('trim', explode(',', env('ACTIVE_LOCALES', 'en')));
 // Regional languages are sorted by their base language, so "British English" sorts as "English, British"
 $supportedLocales = [
     'bs' => ['name' => 'Bosnian', 'script' => 'Latn', 'native' => 'Bosanski', 'regional' => 'bs_BA'],
+    'bs-Cyrl' => ['name' => 'Bosnian (Cyrillic)', 'script' => 'Cyrl', 'native' => 'Босански', 'regional' => 'bs_BA'],
     'en' => ['name' => 'English', 'script' => 'Latn', 'native' => 'English', 'regional' => 'en_GB'],
     'hr' => ['name' => 'Croatian', 'script' => 'Latn', 'native' => 'Hrvatski', 'regional' => 'hr_HR'],
     'sr' => ['name' => 'Serbian (Cyrillic)', 'script' => 'Cyrl', 'native' => 'Српски', 'regional' => 'sr_RS'],
