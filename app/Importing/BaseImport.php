@@ -95,11 +95,11 @@ abstract class BaseImport
     protected static function createFromRequest($request)
     {
         $user = $request->user();
-
+        $ext = $request->file('file')->getClientOriginalExtension();
         return Import::create([
             'type' => static::class,
             'columns' => $request->input('columns', []),
-            'path' => $request->file('file')->store('imports'),
+            'path' => $request->file('file')->storeAs('imports', Str::random(40).'.'.$ext),
             'user_id' => $user->id,
             'for_user_id' => $user->hasAnyRole(['admin', 'expert']) ? $request->input('user_id') : null,
             'lang' => app()->getLocale(),
