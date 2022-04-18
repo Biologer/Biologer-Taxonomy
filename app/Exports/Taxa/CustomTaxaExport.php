@@ -92,7 +92,6 @@ class CustomTaxaExport extends BaseExport
         }))->concat($locales->map(function ($locale, $localeCode) {
             $description = trans('labels.taxa.description');
             $localeTranslation = trans('languages.'.$locale['name']);
-
             return [
                 'label' => "{$description} - {$localeTranslation}",
                 'value' => 'description_'.Str::snake($localeCode),
@@ -134,7 +133,7 @@ class CustomTaxaExport extends BaseExport
             'conservation_documents' => $item->conservationDocuments->map->name->implode('; '),
             'red_lists' => $item->redLists->map(function ($redList) {
                 return "{$redList->name} [{$redList->pivot->category}]";
-            })->implode(', '),
+            })->implode('; '),
             'uses_atlas_codes' => $item->uses_atlas_codes ? __('Yes') : __('No'),
             'synonyms' => $item->synonyms->map->name->implode('; '),
             'countries' => $item->countries->map->name->implode('; '),

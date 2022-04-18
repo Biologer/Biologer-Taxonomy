@@ -29,5 +29,37 @@ class RedListSeeder extends Seeder
             'sr' => ['name' => 'Европа'],
             'sr-Latn' => ['name' => 'Evropa'],
         ]);
+
+        RedList::firstOrCreate(['slug' => 'serbia'])->update([
+            'bs' => ['name' => 'Srbija'],
+            'en' => ['name' => 'Serbia'],
+            'hr' => ['name' => 'Srbija'],
+            'sr' => ['name' => 'Србија'],
+            'sr-Latn' => ['name' => 'Srbija'],
+        ]);
+
+        RedList::firstOrCreate(['slug' => 'balkans'])->update([
+            'bs' => ['name' => 'Balkan'],
+            'en' => ['name' => 'Balkans'],
+            'hr' => ['name' => 'Balkan'],
+            'sr' => ['name' => 'Балкан'],
+            'sr-Latn' => ['name' => 'Balkan'],
+        ]);
+
+        RedList::firstOrCreate(['slug' => 'croatia'])->update([
+            'bs' => ['name' => 'Hrvatska'],
+            'en' => ['name' => 'Croatia'],
+            'hr' => ['name' => 'Hrvatska'],
+            'sr' => ['name' => 'Хрватска'],
+            'sr-Latn' => ['name' => 'Hrvatska'],
+        ]);
+
+        RedList::firstOrCreate(['slug' => 'eu'])->update([
+            'bs' => ['name' => 'Evropska unija'],
+            'en' => ['name' => 'European Union'],
+            'hr' => ['name' => 'Europska unija'],
+            'sr' => ['name' => 'Европска унија'],
+            'sr-Latn' => ['name' => 'Evropska unija'],
+        ]);
     }
 }

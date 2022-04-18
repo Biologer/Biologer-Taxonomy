@@ -97,12 +97,10 @@ class TaxonImport extends BaseImport
                 'required' => false,
             ];
         })->concat([
-            # TODO: Some column must be required, that is rank and name,
-            #   but we have special fields for that, so ID should work for now
             [
                 'label' => trans('labels.id'),
                 'value' => 'id',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'label' => trans('labels.taxa.author'),
@@ -112,7 +110,7 @@ class TaxonImport extends BaseImport
             [
                 'label' => trans('labels.taxa.restricted'),
                 'value' => 'restricted',
-                'required' => false,
+                'required' => true,
             ],
             [
                 'label' => trans('labels.taxa.allochthonous'),
@@ -226,7 +224,7 @@ class TaxonImport extends BaseImport
             'allochthonous' => ['nullable', 'string', Rule::in($this->yesNo())],
             'invasive' => ['nullable', 'string', Rule::in($this->yesNo())],
             'fe_old_id' => ['nullable', 'integer'],
-            'fe_id' => ['nullable', 'string'],
+            # 'fe_id' => ['nullable', 'string'], #some data in RS local have this data as integer, and import is failing
             'uses_atlas_codes' => ['nullable', 'string', Rule::in($this->yesNo())],
             'synonyms' => ['nullable', 'string'],
         ], [
@@ -365,41 +363,7 @@ class TaxonImport extends BaseImport
      */
     private function getNameForRank($rank, $taxon)
     {
-        if ($this->isCompoundSpeciesName($rank, $taxon)) {
-            return $this->buildCompoundSpeciesName($taxon);
-        }
-
-
         return $taxon[$rank] ?? null;
-    }
-
-    /**
-     * Check if we have compound name for species.
-     *
-     * @param  string  $rank
-     * @param  array  $taxon
-     * @return bool
-     */
-    private function isCompoundSpeciesName($rank, $taxon)
-    {
-        return $rank === 'species' &&
-            ! empty($taxon['genus'] &&
-                ! empty($taxon['species']));
-    }
-
-    /**
-     * Build subspecies name from genus, species suffix and subspecies suffix.
-     *
-     * @param  array  $taxon
-     * @return string
-     */
-    private function buildCompoundSpeciesName($taxon)
-    {
-        return implode(' ', array_filter([
-            trim($taxon['genus']),
-            empty($taxon['subgenus']) ? null : '('.$taxon['subgenus'].')',
-            trim($taxon['species']),
-        ]));
     }
 
     /**
@@ -440,7 +404,7 @@ class TaxonImport extends BaseImport
             'invasive' => $this->getBoolean($item, 'invasive'),
             'restricted' => $this->getBoolean($item, 'restricted'),
             'uses_atlas_codes' => $this->getBoolean($item, 'uses_atlas_codes'),
-            'author' =>  Arr::get($item, 'author') ?: null, # $this->getAuthorOnly($item),
+            'author' =>  Arr::get($item, 'author') ?: null,
             'fe_old_id' => Arr::get($item, 'fe_old_id') ?: null,
             'fe_id' => Arr::get($item, 'fe_id') ?: null,
         ],
@@ -550,22 +514,12 @@ class TaxonImport extends BaseImport
     {
         $locales = collect(LaravelLocalization::getSupportedLocales())->reverse();
         $localesData['native_name'] = array();
+        $localesData['description'] = array();
         foreach ($locales as $localeCode => $locale) {
             $localesData['native_name'][$localeCode] = Arr::get($item, 'native_name_'.Str::snake($localeCode));
+            $localesData['description'][$localeCode] = Arr::get($item, 'description_'.Str::snake($localeCode));
         }
         return $localesData;
-    }
-
-    private function getAuthorOnly(array $item)
-    {
-        # TODO: This needs to be reworked!
-        // trimming year after comma if exists
-        $author = Arr::get($item, 'author');
-        if (!$author) {
-            return null;
-        }
-        $author = explode(', ', $author);
-        return $author[0];
     }
 
     private function getBoolean(array $item, string $key)
