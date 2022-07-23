@@ -20,13 +20,11 @@ return [
         'read' => 'Read news',
     ],
 
-    'field_observations_import' => [
+    'taxa_import' => [
         'short_info' => 'If you would like to import data from spreadsheet, it '.
-            'must be saved as CSV file. After selecting the file, you need to '.
+            'must be saved as CSV or XLSX file. After selecting the file, you need to '.
             'reorder the columns in Biologer so that it matches the order in the table '.
-            'and to actually select which columns you would like to import. The list '.
-            'of taxa should follow the taxonomy of Biologer and the list of values for '.
-            'each column (eg. stages, sex, license) must be given based on the values in English.',
+            'and to actually select which columns you would like to import.',
     ],
 
     'taxa' => [

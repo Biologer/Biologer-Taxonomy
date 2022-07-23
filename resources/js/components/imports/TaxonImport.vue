@@ -27,6 +27,17 @@
         @select="setUserId"
         v-model="user"
       />
+      <hr>
+      <div>
+        <b-switch v-model="replace"
+                  name="replace"
+                  true-value="Yes"
+                  false-value="No">
+          <div v-if='replace === "Yes"'>{{ trans('labels.imports.replace') }}</div>
+          <div v-else>{{ trans('labels.imports.append') }}</div>
+        </b-switch>
+      </div>
+      <hr>
 
       <div class="level mb-4">
         <div class="level-left">
@@ -42,6 +53,7 @@
             </div>
           </div>
 
+
           <div class="level-item">
             <b-field class="file" v-if="!importing">
               <b-upload v-model="file" accept=".csv, .xlsx">
@@ -54,7 +66,6 @@
             </b-field>
           </div>
         </div>
-
         <div class="level-right">
           <div class="level-item">
             <button
@@ -143,7 +154,8 @@ export default {
       showSuccessMessage: false,
       cancelling: false,
       userId: null,
-      user: null
+      user: null,
+      replace: 'No',
     }
   },
   computed: {
@@ -197,16 +209,15 @@ export default {
     makeForm() {
       const form = new FormData()
       form.append('file', this.file)
+      form.append("options[replace]", this.replace)
       this.selectedColumns.forEach((column) => {
         form.append('columns[]', column)
       })
       if (this.hasHeading) {
         form.append('has_heading', 1)
       }
+
       form.append('user_id', this.userId || '')
-      if (this.approveCurated) {
-        form.append('options[approve_curated]', 1)
-      }
       return form
     },
     resetForm() {

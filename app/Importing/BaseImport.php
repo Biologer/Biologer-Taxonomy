@@ -21,7 +21,21 @@ abstract class BaseImport
      *
      * @var \App\Import
      */
-    private $import;
+    protected $import;
+
+    /**
+     * Country request info.
+     *
+     * @var string
+     */
+    protected $country;
+
+    /**
+     * Replace data or append non existing.
+     *
+     * @var string
+     */
+    protected $replace;
 
     /**
      * Construct importer.
@@ -95,7 +109,9 @@ abstract class BaseImport
     protected static function createFromRequest($request)
     {
         $user = $request->user();
+
         $ext = $request->file('file')->getClientOriginalExtension();
+
         return Import::create([
             'type' => static::class,
             'columns' => $request->input('columns', []),
@@ -104,7 +120,7 @@ abstract class BaseImport
             'for_user_id' => $user->hasAnyRole(['admin', 'expert']) ? $request->input('user_id') : null,
             'lang' => app()->getLocale(),
             'has_heading' => $request->input('has_heading', false),
-            'options' => $request->input('options', []),
+            'options' => $request->input('options', ['country']),
         ]);
     }
 
@@ -413,7 +429,6 @@ abstract class BaseImport
      *
      * @return void
      */
-    // TODO: Should be able to skip current item if exists and carry on..
     private function storeParsed()
     {
         DB::beginTransaction();

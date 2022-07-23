@@ -174,7 +174,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Choose Columns',
-        'select_csv_file' => 'Select CSV file',
+        'select_import_file' => 'Select CSV/XLSX file',
         'available' => 'Available',
         'chosen' => 'Chosen',
         'import' => 'Import',
@@ -184,6 +184,8 @@ return [
         'columns' => 'Columns',
         'user' => 'For User',
         'approve_curated' => 'Approve Curated',
+        'replace' => 'Replace existing data with import',
+        'append' => 'Append missing data from import, dont change existing data',
     ],
 
     'announcements' => [
@@ -319,4 +321,6 @@ return [
             'field_observation_for_approval' => 'New observation for approval',
         ],
     ],
+
+    'countries' => 'Countries where the taxon was noted.',
 ];
