@@ -51,7 +51,7 @@ class TaxaController
     public function show(Taxon $taxon)
     {
         return new TaxonResource($taxon->load([
-            'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries'
+            'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries',
         ]));
     }
 
@@ -66,14 +66,14 @@ class TaxaController
         $country = Country::findByCode($request->input('country'));
 
         if ($taxon == null or $country == null) {
-            return null;
+            return;
         }
 
         $taxon->countries()->sync($country->id, false);
 
         return new TaxonResource(
             $taxon->load([
-                'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries'
+                'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries',
             ])
         );
     }
@@ -87,10 +87,10 @@ class TaxaController
         $taxon = Taxon::where('id', $taxon_id)->first();
         if ($taxon) {
             return new TaxonResource($taxon->load([
-                'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries'
+                'conservationLegislations', 'redLists', 'conservationDocuments', 'synonyms', 'countries',
             ]));
         } else {
-            return null;
+            return;
         }
     }
 

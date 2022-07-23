@@ -22,7 +22,7 @@ class ValidationServiceProvider extends ServiceProvider
         });
 
         Validator::extend('contain', function ($attribute, $value, $parameters, $validator) {
-            if (!$validator->hasRule($attribute, 'Array') || !is_array($value)) {
+            if (! $validator->hasRule($attribute, 'Array') || ! is_array($value)) {
                 return false;
             }
 
@@ -36,12 +36,12 @@ class ValidationServiceProvider extends ServiceProvider
         });
 
         Validator::extend('contains_non_empty', function ($attribute, $value, $parameters, $validator) {
-            if (!$validator->hasRule($attribute, 'Array') || !is_array($value)) {
+            if (! $validator->hasRule($attribute, 'Array') || ! is_array($value)) {
                 return false;
             }
 
             foreach ($value as $element) {
-                if (!empty($element)) {
+                if (! empty($element)) {
                     return true;
                 }
             }

@@ -114,6 +114,7 @@ abstract class BaseExport
         if ($filetype == 'xlsx') {
             return WriterEntityFactory::createXLSXWriter()->openToFile($path);
         }
+
         return WriterEntityFactory::createCSVWriter()->openToFile($path);
     }
 

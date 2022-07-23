@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Contributor;
 
-use Illuminate\Http\Request;
-
 class DashboardController
 {
     /**

@@ -17,19 +17,19 @@ class CountrySeeder extends Seeder
         Country::firstOrCreate([
             'name' => 'Serbia',
             'code' => 'rs',
-            'url' => 'https://biologer.rs'
+            'url' => 'https://biologer.rs',
         ]);
 
         Country::firstOrCreate([
             'name' => 'Croatia',
             'code' => 'hr',
-            'url' => 'https://biologer.hr'
+            'url' => 'https://biologer.hr',
         ]);
 
         Country::firstOrCreate([
             'name' => 'Bosnia and Herzegovina',
             'code' => 'ba',
-            'url' => 'https://biologer.ba'
+            'url' => 'https://biologer.ba',
         ]);
     }
 }

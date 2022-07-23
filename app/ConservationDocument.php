@@ -38,7 +38,7 @@ class ConservationDocument extends Model
     public $translatedAttributes = ['name', 'description'];
 
     /**
-     * Countries for reference local id's
+     * Countries for reference local id's.
      */
     public function countries()
     {

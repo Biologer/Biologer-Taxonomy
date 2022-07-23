@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
      */
     private function setCustomTranslationMessageSelector()
     {
-        Lang::setSelector(new class () extends MessageSelector {
+        Lang::setSelector(new class() extends MessageSelector {
             public function getPluralIndex($locale, $number)
             {
                 if ($locale === 'sr-Latn') {

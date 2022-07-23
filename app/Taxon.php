@@ -284,7 +284,7 @@ class Taxon extends Model
     }
 
     /**
-     * Countries that have this taxon
+     * Countries that have this taxon.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
