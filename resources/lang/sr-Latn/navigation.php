@@ -47,6 +47,7 @@ return [
     'taxa' => 'Taksoni',
     'new_taxon' => 'Nov takson',
     'edit_taxon' => 'Izmeni takson',
+    'taxa_import' => 'Uvoz taksona',
     'users' => 'Korisnici',
     'edit_user' => 'Izmeni korisnika',
     'reset_password' => 'Resetovanje lozinke',

@@ -48,6 +48,7 @@ return [
     'taxa' => 'Svojte',
     'new_taxon' => 'Nova svojta',
     'edit_taxon' => 'Izmijeni svojtu',
+    'taxa_import' => 'Uvoz taksona',
     'users' => 'Korisnici',
     'edit_user' => 'Izmijeni korisnika',
     'reset_password' => 'Resetiranje lozinke',

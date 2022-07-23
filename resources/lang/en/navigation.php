@@ -48,6 +48,7 @@ return [
     'taxa' => 'Taxa',
     'new_taxon' => 'New Taxon',
     'edit_taxon' => 'Edit Taxon',
+    'taxa_import' => 'Taxa Import',
     'users' => 'Users',
     'edit_user' => 'Edit User',
     'reset_password' => 'Reset Password',
