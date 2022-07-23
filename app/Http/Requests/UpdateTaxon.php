@@ -97,7 +97,7 @@ class UpdateTaxon extends FormRequest
         return DB::transaction(function () use ($taxon) {
             $oldData = $taxon->load([
                 'parent', 'stages', 'conservationLegislations', 'redLists',
-                'conservationDocuments', 'countries'
+                'conservationDocuments', 'countries',
             ])->toArray();
 
             $taxon->update(array_merge(array_map('trim', $this->only(['name', 'rank'])), $this->only([
