@@ -82,6 +82,9 @@ return [
 
         'atlas_codes' => 'Atlas kodovi',
         'uses_atlas_codes' => 'Koristi Atlas kodove',
+        'synonyms' => 'Sinonimi',
+        'add_synonym' => 'Dodaj sinonim',
+        'remove_synonym' => 'Obriši sinonim',
     ],
 
     'field_observations' => [
@@ -181,6 +184,8 @@ return [
         'columns' => 'Kolone',
         'user' => 'Za korisnika',
         'approve_curated' => 'Potvrdi nalaze za taksone koje uređujem',
+        'replace' => 'Zameni postojeće podatke sa podacima iz uvoza',
+        'append' => 'Samo dodaj nedostajuće podatke iz uvoza, ali ne menjaj postojeće podatke',
     ],
 
     'announcements' => [
@@ -313,4 +318,6 @@ return [
             'field_observation_for_approval' => 'Novi nalaz za pregled',
         ],
     ],
+
+    'countries' => 'Države u kojima je zabeležen takson.',
 ];

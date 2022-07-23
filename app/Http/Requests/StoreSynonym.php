@@ -23,6 +23,7 @@ class StoreSynonym extends FormRequest
                 $this->only(['name', 'taxon_id'])
             )
         ))->save();
+
         return $synonym;
     }
 

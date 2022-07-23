@@ -92,6 +92,7 @@ class CustomTaxaExport extends BaseExport
         }))->concat($locales->map(function ($locale, $localeCode) {
             $description = trans('labels.taxa.description');
             $localeTranslation = trans('languages.'.$locale['name']);
+
             return [
                 'label' => "{$description} - {$localeTranslation}",
                 'value' => 'description_'.Str::snake($localeCode),
@@ -112,7 +113,7 @@ class CustomTaxaExport extends BaseExport
 
     /**
      * Extract needed data from item.
-     * All separators must be semicolon with space afterwards ('; ')
+     * All separators must be semicolon with space afterwards ('; ').
      *
      * @param  \App\Taxon  $item
      * @return array

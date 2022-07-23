@@ -27,7 +27,7 @@ class Country extends Model
     }
 
     /**
-     * Referenced red lists
+     * Referenced red lists.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -43,7 +43,7 @@ class Country extends Model
     }
 
     /**
-     * Referenced conservation legislations
+     * Referenced conservation legislations.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -59,7 +59,7 @@ class Country extends Model
     }
 
     /**
-     * Referenced conservation documents
+     * Referenced conservation documents.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -75,7 +75,7 @@ class Country extends Model
     }
 
     /**
-     * Find country by its code
+     * Find country by its code.
      * @param $code
      * @return mixed
      */

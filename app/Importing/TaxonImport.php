@@ -4,7 +4,7 @@ namespace App\Importing;
 
 use App\ConservationDocument;
 use App\ConservationLegislation;
-use App\Country;
+use App\Import;
 use App\RedList;
 use App\Stage;
 use App\Support\Localization;
@@ -12,6 +12,7 @@ use App\Synonym;
 use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -22,45 +23,38 @@ class TaxonImport extends BaseImport
     /**
      * Available conservation documents.
      *
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var EloquentCollection
      */
     private $conservationDocuments;
 
     /**
      * Available conservation legislations.
      *
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var EloquentCollection
      */
     private $conservationLegislations;
 
     /**
      * Available red lists.
      *
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var EloquentCollection
      */
     private $redLists;
 
     /**
-     * Available countries.
-     *
-     * @var \Illuminate\Database\Eloquent\Collection
-     */
-    private $countries;
-
-    /**
      * Available stages.
      *
-     * @var \Illuminate\Database\Eloquent\Collection
+     * @var EloquentCollection
      */
     private $stages;
 
     /**
      * Create new importer instance.
      *
-     * @param  \App\Import  $import
+     * @param Import $import
      * @return void
      */
-    public function __construct($import)
+    public function __construct(Import $import)
     {
         parent::__construct($import);
         $this->fetchRelated();
@@ -76,17 +70,17 @@ class TaxonImport extends BaseImport
         $this->conservationDocuments = ConservationDocument::all();
         $this->conservationLegislations = ConservationLegislation::all();
         $this->redLists = RedList::all();
-        $this->countries = Country::all();
         $this->stages = Stage::all();
+        $this->replace = $this->getBoolean($this->import->options->toArray(), 'replace');
     }
 
     /**
      * Definition of all calumns with their labels.
      *
      * @param  \App\User|null  $user
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public static function columns($user = null)
+    public static function columns($user = null): Collection
     {
         $locales = collect(LaravelLocalization::getSupportedLocales());
 
@@ -157,16 +151,6 @@ class TaxonImport extends BaseImport
                 'value' => 'uses_atlas_codes',
                 'required' => false,
             ],
-            [
-                'label' => trans('labels.taxa.synonyms'),
-                'value' => 'synonyms',
-                'required' => false,
-            ],
-            [
-                'label' => trans('labels.taxa.countries'),
-                'value' => 'countries',
-                'required' => false,
-            ],
         ])->concat($locales->map(function ($locale, $localeCode) {
             $nativeName = trans('labels.taxa.native_name');
             $localeTranslation = trans('languages.'.$locale['name']);
@@ -185,10 +169,16 @@ class TaxonImport extends BaseImport
                 'value' => 'description_'.Str::snake($localeCode),
                 'required' => false,
             ];
-        }));
+        }))->concat([
+            [
+                'label' => trans('labels.taxa.synonyms'),
+                'value' => 'synonyms',
+                'required' => false,
+            ],
+        ]);
     }
 
-    public function generateErrorsRoute()
+    public function generateErrorsRoute(): string
     {
         return route('api.taxon-imports.errors', $this->model());
     }
@@ -199,7 +189,7 @@ class TaxonImport extends BaseImport
      * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function makeValidator(array $data)
+    protected function makeValidator(array $data): \Illuminate\Contracts\Validation\Validator
     {
         $locales = collect(LaravelLocalization::getSupportedLocales())->reverse();
         $ranks = collect(array_keys(Taxon::RANKS));
@@ -207,13 +197,15 @@ class TaxonImport extends BaseImport
         return Validator::make($data, [
             $locales->map(function ($locale) {
                 $nativeName = trans('labels.taxa.native_name');
-                $localeTranslation = trans('languages.' . $locale['name']);
+                $localeTranslation = trans('languages.'.$locale['name']);
+
                 return [
                     "{$nativeName} - {$localeTranslation}" => ['nullable', 'string'],
                 ];
             }),
             $ranks->map(function ($rank) {
                 $label = trans("taxonomy.($rank}");
+
                 return [
                     "{$label}" => ['nullable', 'string'],
                 ];
@@ -224,13 +216,13 @@ class TaxonImport extends BaseImport
             'allochthonous' => ['nullable', 'string', Rule::in($this->yesNo())],
             'invasive' => ['nullable', 'string', Rule::in($this->yesNo())],
             'fe_old_id' => ['nullable', 'integer'],
-            # 'fe_id' => ['nullable', 'string'], #some data in RS local have this data as integer, and import is failing
+            'fe_id' => ['nullable'],
             'uses_atlas_codes' => ['nullable', 'string', Rule::in($this->yesNo())],
             'synonyms' => ['nullable', 'string'],
         ], [
             $ranks->map(function ($rank) {
                 return [
-                    "{$rank}" => trans("taxonomy.($rank}")
+                    "{$rank}" => trans("taxonomy.($rank}"),
                 ];
             }),
             'id' => trans('labels.id'),
@@ -254,7 +246,7 @@ class TaxonImport extends BaseImport
      *
      * @return array
      */
-    protected function yesNo()
+    protected function yesNo(): array
     {
         $lang = $this->model()->lang;
 
@@ -276,16 +268,23 @@ class TaxonImport extends BaseImport
     /**
      * Create taxon with ancestor tree using data from one row.
      *
-     * @param  array  $taxon
+     * @param array $taxon
      * @return void
      */
-    private function addEntireTreeOfTheTaxon($taxon)
+    private function addEntireTreeOfTheTaxon(array $taxon)
     {
         if ($tree = $this->buildWorkingTree($taxon)) {
             // We assume that the rest of available information describes the
             // lowest ranked taxon in the row.
             $last = end($tree);
-            $last->fill($this->extractOtherTaxonData($taxon));
+
+            // Depending on import settings, will replace or append data from import.
+            if ($this->replace) {
+                $last->fill($this->extractOtherTaxonData($taxon));
+            } else {
+                $last->fill($this->extractNonExistingData($last, $taxon));
+                $last->update(array_merge(Localization::transformTranslations($this->getNonExistingLocaleData($last->toArray(), $taxon))));
+            }
 
             $this->storeWorkingTree($tree);
             $this->saveRelations($last, $taxon);
@@ -295,10 +294,10 @@ class TaxonImport extends BaseImport
     /**
      * Make taxa tree using data from a row.
      *
-     * @param  array  $taxon
+     * @param array $taxon
      * @return array
      */
-    private function buildWorkingTree($taxon)
+    private function buildWorkingTree(array $taxon): array
     {
         $tree = [];
         $taxa = $this->getRankNamePairsForTree($taxon);
@@ -316,11 +315,11 @@ class TaxonImport extends BaseImport
     /**
      * Check if it's the same taxon as existing one.
      *
-     * @param  \App\Taxon  $existingTaxon
-     * @param  array  $taxon
+     * @param Taxon $existingTaxon
+     * @param array $taxon
      * @return bool
      */
-    private function isSameTaxon($existingTaxon, $taxon)
+    private function isSameTaxon(Taxon $existingTaxon, array $taxon): bool
     {
         return $existingTaxon->rank === $taxon['rank'] &&
             strtolower($existingTaxon->name) === strtolower($taxon['name']);
@@ -329,10 +328,10 @@ class TaxonImport extends BaseImport
     /**
      * Get name and rank data for each taxon in the tree from the row.
      *
-     * @param  array  $taxon
+     * @param array $taxon
      * @return array
      */
-    private function getRankNamePairsForTree($taxon)
+    private function getRankNamePairsForTree(array $taxon): array
     {
         $tree = [];
         $ranks = array_keys(Taxon::RANKS);
@@ -357,23 +356,23 @@ class TaxonImport extends BaseImport
      * Get the name of the taxon for given rank, using the data from the row.
      * We might need to compose it if species and subspecies contains only suffix.
      *
-     * @param  string  $rank
-     * @param  array  $taxon
+     * @param string $rank
+     * @param array $taxon
      * @return string|null
      */
-    private function getNameForRank($rank, $taxon)
+    private function getNameForRank(string $rank, array $taxon): ?string
     {
         return $taxon[$rank] ?? null;
     }
 
     /**
-     * If we already have some taxon in database, we don't need to create it againg,
+     * If we already have some taxon in database, we don't need to create it again,
      * we'll use the one we have.
      *
      * @param  array  $tree
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return EloquentCollection
      */
-    private function getExistingTaxaForPotentialTree(array $tree)
+    private function getExistingTaxaForPotentialTree(array $tree): EloquentCollection
     {
         $query = Taxon::query()->with('ancestors');
 
@@ -393,21 +392,21 @@ class TaxonImport extends BaseImport
     /**
      * Extract the rest of information that we'll use to describe the lowest taxon in the row.
      *
-     * @param  array  $row
+     * @param array $item
      * @return array
      */
-    private function extractOtherTaxonData($item)
+    private function extractOtherTaxonData(array $item): array
     {
         return array_merge(
             [
-            'allochthonous' => $this->getBoolean($item, 'allochthonous'),
-            'invasive' => $this->getBoolean($item, 'invasive'),
-            'restricted' => $this->getBoolean($item, 'restricted'),
-            'uses_atlas_codes' => $this->getBoolean($item, 'uses_atlas_codes'),
-            'author' =>  Arr::get($item, 'author') ?: null,
-            'fe_old_id' => Arr::get($item, 'fe_old_id') ?: null,
-            'fe_id' => Arr::get($item, 'fe_id') ?: null,
-        ],
+                'author' => Arr::get($item, 'author') ?: null,
+                'fe_old_id' => Arr::get($item, 'fe_old_id') ?: null,
+                'fe_id' => Arr::get($item, 'fe_id') ?: null,
+                'restricted' => $this->getBoolean($item, 'restricted'),
+                'allochthonous' => $this->getBoolean($item, 'allochthonous'),
+                'invasive' => $this->getBoolean($item, 'invasive'),
+                'uses_atlas_codes' => $this->getBoolean($item, 'uses_atlas_codes'),
+            ],
             Localization::transformTranslations($this->getLocaleData($item)),
         );
     }
@@ -416,10 +415,10 @@ class TaxonImport extends BaseImport
      * Store the working tree of a row.
      * Some taxa might already exist, some are new and need to be created.
      *
-     * @param  array  $tree
+     * @param array $tree
      * @return array
      */
-    private function storeWorkingTree($tree)
+    private function storeWorkingTree(array $tree): array
     {
         $sum = [];
         $last = null;
@@ -431,7 +430,6 @@ class TaxonImport extends BaseImport
 
             if ($current->isDirty() || $doesntExist) {
                 $current->save();
-                //$this->info('Stored taxon: '.$current->name);
             }
 
             // If we wanted to attribute the taxa tree to a user,
@@ -451,13 +449,13 @@ class TaxonImport extends BaseImport
     }
 
     /**
-     * Connect the lowest taxon in the row with some of it's relations.
+     * Connect the lowest taxon in the row with some of its relations.
      *
-     * @param  \App\Taxon  $taxon
-     * @param  array  $data
+     * @param Taxon $taxon
+     * @param array $data
      * @return void
      */
-    private function saveRelations($taxon, $data)
+    private function saveRelations(Taxon $taxon, array $data)
     {
         $this->createSynonyms($data, $taxon);
 
@@ -473,8 +471,6 @@ class TaxonImport extends BaseImport
                 })
             );
         }
-
-        $taxon->countries()->sync($this->getCountries($data), []);
     }
 
     /**
@@ -483,12 +479,8 @@ class TaxonImport extends BaseImport
      * @param string $value
      * @return bool
      */
-    protected function isTranslatedYes($value)
+    protected function isTranslatedYes(string $value): bool
     {
-        if (! is_string($value)) {
-            return false;
-        }
-
         $yes = __('Yes', [], $this->model()->lang);
 
         return strtolower($yes) === strtolower($value);
@@ -497,7 +489,7 @@ class TaxonImport extends BaseImport
     private function createSynonyms(array $item, $taxon)
     {
         $synonym_names = Arr::get($item, 'synonyms');
-        if (!$synonym_names) {
+        if (! $synonym_names) {
             return;
         }
 
@@ -510,19 +502,53 @@ class TaxonImport extends BaseImport
         }
     }
 
-    private function getLocaleData($item)
+    private function getLocaleData($item): array
     {
         $locales = collect(LaravelLocalization::getSupportedLocales())->reverse();
-        $localesData['native_name'] = array();
-        $localesData['description'] = array();
+        $localesData['native_name'] = [];
+        $localesData['description'] = [];
         foreach ($locales as $localeCode => $locale) {
-            $localesData['native_name'][$localeCode] = Arr::get($item, 'native_name_'.Str::snake($localeCode));
-            $localesData['description'][$localeCode] = Arr::get($item, 'description_'.Str::snake($localeCode));
+            if (Arr::get($item, 'native_name_'.Str::snake($localeCode)) != null) {
+                $localesData['native_name'][$localeCode] = Arr::get($item, 'native_name_'.Str::snake($localeCode));
+            }
+            if (Arr::get($item, 'description_'.Str::snake($localeCode)) != null) {
+                $localesData['description'][$localeCode] = Arr::get($item, 'description_'.Str::snake($localeCode));
+            }
         }
+
         return $localesData;
     }
 
-    private function getBoolean(array $item, string $key)
+    private function getNonExistingLocaleData(array $existing, array $item): array
+    {
+        $locales = collect(LaravelLocalization::getSupportedLocales())->reverse();
+        $localesData['native_name'] = [];
+        $localesData['description'] = [];
+        foreach ($locales as $localeCode => $locale) {
+            foreach ($existing['translations'] as $oldTrans) {
+                if ($localeCode == $oldTrans['locale']) {
+                    if ($this->isEmpty($oldTrans['native_name'])) {
+                        if (Arr::get($item, 'native_name_'.Str::snake($localeCode)) != null) {
+                            $localesData['native_name'][$localeCode] = Arr::get($item, 'native_name_'.Str::snake($localeCode));
+                        }
+                    } else {
+                        $localesData['native_name'][$localeCode] = $oldTrans['native_name'];
+                    }
+                    if ($this->isEmpty($oldTrans['description'])) {
+                        if (Arr::get($item, 'description_'.Str::snake($localeCode)) != null) {
+                            $localesData['description'][$localeCode] = Arr::get($item, 'description_'.Str::snake($localeCode));
+                        }
+                    } else {
+                        $localesData['description'][$localeCode] = $oldTrans['description'];
+                    }
+                }
+            }
+        }
+
+        return $localesData;
+    }
+
+    private function getBoolean(array $item, string $key): bool
     {
         $value = Arr::get($item, $key, false);
 
@@ -530,15 +556,14 @@ class TaxonImport extends BaseImport
     }
 
     /**
-     *  All separators must be semicolon with space afterwards ('; ')
+     *  All separators must be semicolon with space afterwards ('; ').
      */
-
     private function getConservationLegislations(array $data)
     {
         $legislations = strtolower(Arr::get($data, 'conservation_legislations'));
-        $legislation_ids = array();
-        if (!$legislations) {
-            return null;
+        $legislation_ids = [];
+        if (! $legislations) {
+            return;
         }
         foreach (explode('; ', $legislations) as $legislation) {
             $leg = $this->conservationLegislations->first(function ($leg) use ($legislation) {
@@ -546,15 +571,16 @@ class TaxonImport extends BaseImport
             });
             $legislation_ids[] = $leg ? $leg->id : null;
         }
+
         return $legislation_ids;
     }
 
     private function getConservationDocuments(array $data)
     {
         $documents = strtolower(Arr::get($data, 'conservation_documents'));
-        $document_ids = array();
-        if (!$documents) {
-            return null;
+        $document_ids = [];
+        if (! $documents) {
+            return;
         }
         foreach (explode('; ', $documents) as $document) {
             $doc = $this->conservationDocuments->first(function ($doc) use ($document) {
@@ -562,15 +588,16 @@ class TaxonImport extends BaseImport
             });
             $document_ids[] = $doc ? $doc->id : null;
         }
+
         return $document_ids;
     }
 
     private function getStages(array $data)
     {
         $stages = strtolower(Arr::get($data, 'stages'));
-        $stage_ids = array();
-        if (!$stages) {
-            return null;
+        $stage_ids = [];
+        if (! $stages) {
+            return;
         }
         foreach (explode('; ', $stages) as $translation) {
             $stage = $this->stages->first(function ($stage) use ($translation) {
@@ -578,6 +605,7 @@ class TaxonImport extends BaseImport
             });
             $stage_ids[] = $stage ? $stage->id : null;
         }
+
         return $stage_ids;
     }
 
@@ -585,11 +613,10 @@ class TaxonImport extends BaseImport
     {
         $red_lists = Arr::get($data, 'red_lists');
         $collection = collect();
-        if (!$red_lists) {
-            return null;
+        if (! $red_lists) {
+            return;
         }
         foreach (explode('; ', $red_lists) as $red_list) {
-            # TODO: There must be an easier way...
             $x = explode(' [', $red_list);
             $region = strtolower($x[0]);
             $category = substr($x[1], 0, strlen($x[1]) - 1);
@@ -601,22 +628,42 @@ class TaxonImport extends BaseImport
                 $collection->push(['id' => $red_list->id, 'category' => $category]);
             }
         }
+
         return $collection;
     }
 
-    private function getCountries(array $data)
+    private function extractNonExistingData(Taxon $last, array $input): array
     {
-        $countries = strtolower(Arr::get($data, 'countries'));
-        $country_ids = array();
-        if (!$countries) {
-            return null;
+        $existing = $last->toArray();
+        $collect = [];
+
+        if ($this->isEmpty($existing['author'])) {
+            $collect['author'] = Arr::get($input, 'author') ?: null;
         }
-        foreach (explode('; ', $countries) as $country) {
-            $country = $this->countries->first(function ($c) use ($country) {
-                return strtolower($c->name) == $country;
-            });
-            $country_ids[] = $country ? $country->id : null;
+        if ($this->isEmpty($existing['fe_old_id'])) {
+            $collect['fe_old_id'] = Arr::get($input, 'fe_old_id') ?: null;
         }
-        return $country_ids;
+        if ($this->isEmpty($existing['fe_id'])) {
+            $collect['fe_id'] = Arr::get($input, 'fe_id') ?: null;
+        }
+
+        return array_merge(
+            $collect,
+            [
+                'restricted' => $this->getBoolean($input, 'restricted'),
+                'allochthonous' => $this->getBoolean($input, 'allochthonous'),
+                'invasive' => $this->getBoolean($input, 'invasive'),
+                'uses_atlas_codes' => $this->getBoolean($input, 'uses_atlas_codes'),
+            ],
+        );
+    }
+
+    private function isEmpty($item): bool
+    {
+        if ($item == null or $item == '') {
+            return true;
+        }
+
+        return false;
     }
 }

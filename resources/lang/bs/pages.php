@@ -20,14 +20,11 @@ return [
         'read' => 'Pročitaj vijest',
     ],
 
-    'field_observations_import' => [
+    'taxa_import' => [
         'short_info' => 'Ukoliko želite da uvezete podatke iz tabele, potrebno '.
             'je da ona bude sačuvana kao CSV datoteka. Nakon izbora datoteke, treba '.
             'da uskladite redoslijed kolona u Biologeru tako da on odgovara redoslijedu u '.
-            'tabeli i da odaberete koje kolone želite da uvezete. Spisak taksona mora '.
-            'da prati taksonomiju Biologer baze podataka, a spisak vrijednosti za svaku '.
-            'kolonu (npr. stadij, pol, licenca) mora biti dat na osnovu vrijednosti '.
-            'na engleskom jeziku.',
+            'tabeli i da odaberete koje kolone želite da uvezete.',
     ],
 
     'taxa' => [

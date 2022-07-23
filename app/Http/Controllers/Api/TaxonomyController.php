@@ -15,17 +15,17 @@ class TaxonomyController
 {
     /**
      * Check connectivity to this database.
-     *
      */
     public function check(Request $request)
     {
         $input = $request->all();
         $country_code = Taxonomy::checkKey($input['key']);
         if ($country_code == '') {
-            return response('Failed to connect', 400);
+            return response('Unauthorized!', 401);
         }
 
         $country = Country::findByCode($country_code);
+
         return response($country->name, 200);
     }
 
@@ -102,6 +102,7 @@ class TaxonomyController
 
             if ($taxon == null) {
                 $taxa[$id]['response'] = '';
+
                 continue;
             }
 
@@ -109,7 +110,7 @@ class TaxonomyController
 
             $taxa[$id]['response'] = new TaxonResource($taxon->load([
                 'conservationLegislations', 'redLists', 'conservationDocuments',
-                'stages', 'synonyms', 'parent'
+                'stages', 'synonyms', 'parent',
             ]));
 
             $taxa[$id]['response']['reason'] = 'Data updated from Biologer Taxonomy database.';
@@ -142,6 +143,7 @@ class TaxonomyController
 
             if ($res != null) {
                 $syncIds[$res->id] = ['ref_id' => $redlist['id']];
+
                 continue;
             }
 
@@ -151,6 +153,7 @@ class TaxonomyController
                     foreach ($rl->translations as $rl_trans) {
                         if ($rl_trans->name == $trans['name']) {
                             $syncIds[$rl->id] = ['ref_id' => $redlist['id']];
+
                             continue 3;
                         }
                     }
@@ -166,6 +169,7 @@ class TaxonomyController
             }
             $syncIds[$res->id] = ['ref_id' => $redlist['id']];
         }
+
         return $syncIds;
     }
 
@@ -180,6 +184,7 @@ class TaxonomyController
 
             if ($res != null) {
                 $syncIds[$res->id] = ['ref_id' => $doc['id']];
+
                 continue;
             }
 
@@ -189,6 +194,7 @@ class TaxonomyController
                     foreach ($rl->translations as $rl_trans) {
                         if ($rl_trans->name == $trans['name']) {
                             $syncIds[$rl->id] = ['ref_id' => $doc['id']];
+
                             continue 3;
                         }
                     }
@@ -204,6 +210,7 @@ class TaxonomyController
             }
             $syncIds[$res->id] = ['ref_id' => $doc['id']];
         }
+
         return $syncIds;
     }
 
@@ -218,6 +225,7 @@ class TaxonomyController
 
             if ($res != null) {
                 $syncIds[$res->id] = ['ref_id' => $leg['id']];
+
                 continue;
             }
 
@@ -227,6 +235,7 @@ class TaxonomyController
                     foreach ($rl->translations as $rl_trans) {
                         if ($rl_trans->name == $trans['name']) {
                             $syncIds[$rl->id] = ['ref_id' => $leg['id']];
+
                             continue 3;
                         }
                     }
@@ -242,6 +251,7 @@ class TaxonomyController
             }
             $syncIds[$res->id] = ['ref_id' => $leg['id']];
         }
+
         return $syncIds;
     }
 }

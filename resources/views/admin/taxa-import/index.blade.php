@@ -10,7 +10,7 @@
             :columns="{{ $columns }}"
             :running-import="{{ $import ?? 'null' }}"
             :cancellable-statuses="{{ $cancellableStatuses }}"
-            @role(['admin', 'curator'])
+            @role(['admin', 'expert'])
             can-submit-for-user
             @endrole
         />

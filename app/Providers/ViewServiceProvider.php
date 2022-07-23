@@ -42,24 +42,7 @@ class ViewServiceProvider extends ServiceProvider
                 ->setWrapperTag('aside')
                 ->withoutParentTag()
                 ->addClass('menu')
-                ->add(
-                    Menu::new()
-                        ->prepend('<p class="menu-label">'.trans('navigation.public').'</p>')
-                        ->addClass('menu-list')
-                        ->route('contributor.index', trans('navigation.preferences.general'))
-                        ->setActiveClass('is-active')
-                        ->setActiveClassOnLink()
-                        ->setActiveFromRequest()
-                )->addIf(
-                    optional(auth()->user())->hasAnyRole(['admin', 'expert']),
-                    Menu::new()
-                        ->prepend('<p class="menu-label">'.trans('navigation.curator').'</p>')
-                        ->addClass('menu-list')
-                        ->route('contributor.index', trans('navigation.preferences.general'))
-                        ->setActiveClass('is-active')
-                        ->setActiveClassOnLink()
-                        ->setActiveFromRequest()
-                )->addIf(
+                ->addIf(
                     optional(auth()->user())->hasAnyRole(['admin', 'expert']),
                     Menu::new()
                         ->prepend('<p class="menu-label">'.trans('navigation.admin').'</p>')
@@ -96,8 +79,7 @@ class ViewServiceProvider extends ServiceProvider
                         ->setActiveClass('is-active')
                         ->setActiveClassOnLink()
                         ->setActiveFromRequest()
-                )
-            ;
+                );
         });
     }
 }

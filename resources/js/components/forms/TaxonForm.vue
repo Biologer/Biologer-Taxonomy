@@ -14,6 +14,7 @@
         </div>
       </b-field>
     </div>
+    <hr>
     <div class="columns">
       <div class="column is-4">
         <nz-taxon-autocomplete
@@ -225,15 +226,10 @@
           <div v-if="synonyms.length > 0">
               <b-field v-for="(synonym, index) in synonyms" :key="index">
                   <div class="columns">
-                      <div class="column is-half">
-                          <p>{{ synonym.name }}</p>
-                      </div>
+                      <div class="column is-half"><p>{{ synonym.name }}</p></div>
                       <div class="column">
-                          <button
-                              class="delete"
-                              @click="removeSynonym(index)"
-                              v-tooltip='"Remove"'
-                          >
+                          <button type="button" class="delete" @click="removeSynonym(index, synonym.id)"
+                              v-tooltip="{content: trans('labels.taxa.remove_synonym')}">
                           </button>
                       </div>
                   </div>
@@ -242,16 +238,11 @@
       </div>
       <b-field v-for="(synonym, index) in synonymNames" :key="index">
           <div class="columns">
-              <div class="column is-half">
-                  <p>{{ synonym }}</p>
-              </div>
+              <div class="column is-half"><p>{{ synonym }}</p></div>
               <div class="column">
-                  <button
-                      class="delete"
-                      @click="removeSynonymName(index)"
-                      v-tooltip='"Remove"'
-                  >
-                  </button>
+                <button type="button" class="delete" @click="removeSynonym(index, 0)"
+                  v-tooltip="{content: trans('labels.taxa.remove_synonym')}">
+                </button>
               </div>
           </div>
       </b-field>
@@ -262,7 +253,7 @@
           </div>
           <div class="column">
               <button type="button" class="button is-primary" @click="addSynonym">
-                  {{ trans("labels.taxa.addSynonym") }}
+                  {{ trans("labels.taxa.add_synonym") }}
               </button>
           </div>
       </div>
@@ -336,6 +327,7 @@ export default {
           uses_atlas_codes: false,
           synonyms: [],
           countries: [],
+          removedSynonyms: [],
         }
       }
     },
@@ -363,6 +355,10 @@ export default {
       }
     },
     countries: Array,
+    removedSynonyms: {
+      type: Array,
+      default: () => []
+    },
   },
 
   data() {
@@ -421,18 +417,19 @@ export default {
         uses_atlas_codes: this.taxon.uses_atlas_codes,
         synonyms: this.taxon.synonyms,
         synonym_names: this.synonymNames,
+        removed_synonyms: this.removedSynonyms,
       }, {
         resetOnSuccess: false
       })
     },
 
-    removeSynonym(index) {
-      axios.delete(route("api.synonyms.destroy", this.synonyms[index]));
+    removeSynonym(index, id) {
+      if (id === 0){
+        this.$delete(this.synonymNames, index);
+        return;
+      }
+      this.removedSynonyms.push(id);
       this.$delete(this.synonyms, index);
-    },
-
-    removeSynonymName(index) {
-      this.$delete(this.synonymNames, index);
     },
 
     addSynonym(){

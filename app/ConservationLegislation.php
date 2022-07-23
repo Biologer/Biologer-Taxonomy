@@ -45,7 +45,7 @@ class ConservationLegislation extends Model
     }
 
     /**
-     * Countries for reference local id's
+     * Countries for reference local id's.
      */
     public function countries()
     {

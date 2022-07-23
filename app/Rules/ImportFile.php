@@ -76,6 +76,7 @@ class ImportFile implements Rule
                 }
                 $hasOneRow = true;
             }
+
             break;
         }
 
