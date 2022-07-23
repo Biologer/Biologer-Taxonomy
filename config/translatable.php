@@ -12,7 +12,6 @@ return [
     */
     'locales' => [
         'bs',
-        'bs-Cyrl',
         'en',
         'hr',
         'sr',
