@@ -81,6 +81,9 @@ return [
 
         'atlas_codes' => 'Атлас кодови',
         'uses_atlas_codes' => 'Користи Атлас кодове',
+        'synonyms' => 'Синоними',
+        'add_synonym' => 'Додај синоним',
+        'remove_synonym' => 'Обриши синоним',
     ],
 
     'field_observations' => [

@@ -106,7 +106,7 @@ class UpdateTaxon extends FormRequest
                 'description', 'native_name',
             ]))));
 
-            $this->createSynonyms($taxon);
+            $this->updateSynonyms($taxon);
             $this->syncRelations($taxon);
 
             $this->logUpdatedActivity($taxon, $oldData);
@@ -254,15 +254,24 @@ class UpdateTaxon extends FormRequest
         return ! $old->diffAssoc($new)->isEmpty() || ! $new->diffAssoc($old)->isEmpty();
     }
 
-    protected function createSynonyms(Taxon $taxon)
+    protected function updateSynonyms(Taxon $taxon)
     {
         $synonym_names = $this->input('synonym_names');
         foreach ($synonym_names as $k => $v) {
-            $synonym = Synonym::firstOrCreate([
+            $synonym = new Synonym([
                 'name' => $v,
                 'taxon_id' => $taxon->id,
             ]);
             $synonym->save();
+        }
+
+        $removed_synonyms = $this->input('removed_synonyms');
+        if (! $removed_synonyms) {
+            return;
+        }
+        foreach ($removed_synonyms as $id) {
+            $synonym = Synonym::find($id);
+            $synonym->delete();
         }
     }
 

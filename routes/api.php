@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\My\ReadNotificationsBatchController;
 use App\Http\Controllers\Api\My\UnreadNotificationsController;
 use App\Http\Controllers\Api\ReadAnnouncementsController;
 use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\SynonymsController;
 use App\Http\Controllers\Api\TaxaController;
 use App\Http\Controllers\Api\TaxonExportsController;
 use App\Http\Controllers\Api\TaxonImportsController;
@@ -133,16 +132,6 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('read-announcements', [ReadAnnouncementsController::class, 'store'])
         ->withoutMiddleware('verified')
         ->name('api.read-announcements.store');
-
-    // Synonyms
-    Route::post('synonyms', [SynonymsController::class, 'store'])
-        ->name('api.synonyms.create');
-
-    Route::put('synonyms/{synonym}', [SynonymsController::class, 'update'])
-        ->name('api.synonyms.update');
-
-    Route::delete('synonyms/{synonym}', [SynonymsController::class, 'destroy'])
-        ->name('api.synonyms.destroy');
 
     // My
     Route::prefix('my')->group(function () {
