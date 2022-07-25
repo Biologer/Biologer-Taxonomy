@@ -527,14 +527,14 @@ class TaxonImport extends BaseImport
         foreach ($locales as $localeCode => $locale) {
             foreach ($existing['translations'] as $oldTrans) {
                 if ($localeCode == $oldTrans['locale']) {
-                    if ($this->isEmpty($oldTrans['native_name'])) {
+                    if ($this->isEmpty($oldTrans, 'native_name')) {
                         if (Arr::get($item, 'native_name_'.Str::snake($localeCode)) != null) {
                             $localesData['native_name'][$localeCode] = Arr::get($item, 'native_name_'.Str::snake($localeCode));
                         }
                     } else {
                         $localesData['native_name'][$localeCode] = $oldTrans['native_name'];
                     }
-                    if ($this->isEmpty($oldTrans['description'])) {
+                    if ($this->isEmpty($oldTrans, 'description')) {
                         if (Arr::get($item, 'description_'.Str::snake($localeCode)) != null) {
                             $localesData['description'][$localeCode] = Arr::get($item, 'description_'.Str::snake($localeCode));
                         }
@@ -637,13 +637,13 @@ class TaxonImport extends BaseImport
         $existing = $last->toArray();
         $collect = [];
 
-        if ($this->isEmpty($existing['author'])) {
+        if ($this->isEmpty($existing, 'author')) {
             $collect['author'] = Arr::get($input, 'author') ?: null;
         }
-        if ($this->isEmpty($existing['fe_old_id'])) {
+        if ($this->isEmpty($existing, 'fe_old_id')) {
             $collect['fe_old_id'] = Arr::get($input, 'fe_old_id') ?: null;
         }
-        if ($this->isEmpty($existing['fe_id'])) {
+        if ($this->isEmpty($existing, 'fe_id')) {
             $collect['fe_id'] = Arr::get($input, 'fe_id') ?: null;
         }
 
@@ -658,9 +658,13 @@ class TaxonImport extends BaseImport
         );
     }
 
-    private function isEmpty($item): bool
+    private function isEmpty(array $existing, string $key): bool
     {
-        if ($item == null or $item == '') {
+        if (! array_key_exists($key, $existing)) {
+            return true;
+        }
+
+        if ($existing[$key] == null or $existing[$key] == '') {
             return true;
         }
 
