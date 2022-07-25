@@ -47,8 +47,8 @@ Route::post('taxonomy/connect', [TaxonomyController::class, 'connect'])
 Route::post('taxonomy/disconnect', [TaxonomyController::class, 'disconnect'])
     ->name('api.taxonomy.disconnect');
 
-Route::post('taxonomy/search', [TaxonomyController::class, 'search'])
-    ->name('api.taxonomy.search');
+Route::post('taxonomy/sync', [TaxonomyController::class, 'sync'])
+    ->name('api.taxonomy.sync');
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     // Taxa

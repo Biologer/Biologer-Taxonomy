@@ -85,7 +85,7 @@ class TaxonomyController
      *
      * @param \Illuminate\Http\Request $request
      */
-    public function search(Request $request)
+    public function sync(Request $request)
     {
         $input = $request->all();
         $country_code = Taxonomy::checkKey($input['key']);
