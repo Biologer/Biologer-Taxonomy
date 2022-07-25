@@ -157,5 +157,13 @@ class ConservationLegislationSeeder extends Seeder
             'sr' => ['name' => 'ЦМС, Анекс 2', 'description' => 'Конвенција о очувању миграторних врста дивљих животиња ili Бонска конвенција - Анекс 2'],
             'sr-Latn' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
         ]);
+
+        ConservationLegislation::firstOrCreate(['slug' => 'croatia-1'])->update([
+            'bs' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
+            'en' => ['name' => 'Protected in Croatia', 'description' => ''],
+            'hr' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
+            'sr' => ['name' => 'Заштићен у Хрватској', 'description' => ''],
+            'sr-Latn' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
+        ]);
     }
 }
