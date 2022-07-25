@@ -54,6 +54,6 @@ return [
     'photos_disk' => env('PHOTOS_DISK', 'public'),
 
     'taxonomy_key_rs' => env('API_KEY_SERBIA', ''),
-    'taxonomy_key_hr' => env('SECRET_KEY_CROATIA', ''),
-    'taxonomy_key_ba' => env('SECRET_KEY_BOSNIA', ''),
+    'taxonomy_key_hr' => env('API_KEY_CROATIA', ''),
+    'taxonomy_key_ba' => env('API_KEY_BOSNIA', ''),
 ];
