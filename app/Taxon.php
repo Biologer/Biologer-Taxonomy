@@ -194,6 +194,26 @@ class Taxon extends Model
 
 
     /**
+     * Find taxon by rank, name and ancestors.
+     *
+     * @param string $name
+     * @param string $rank,
+     * @param string $ancestor
+     * @return \App\Taxon
+     */
+    public static function findByRankNameAndAncestor(string $name, string $rank, string $ancestor)
+    {
+        $build = static::where(['name' => $name, 'rank' => $rank]);
+
+        if ( $build->count() > 1) {
+            return $build->where('ancestors_names', 'like', $ancestor)->first();
+        }
+
+        return $build->first();
+    }
+
+
+    /**
      * Approved observations.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
