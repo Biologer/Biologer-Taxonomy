@@ -84,6 +84,9 @@ return [
         'synonyms' => 'Синоними',
         'add_synonym' => 'Додај синоним',
         'remove_synonym' => 'Обриши синоним',
+
+        'synonym_name' => 'Назив',
+        'synonym_author' => 'Аутор',
     ],
 
     'field_observations' => [

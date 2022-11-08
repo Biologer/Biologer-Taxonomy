@@ -85,6 +85,9 @@ return [
         'synonyms' => 'Synonyms',
         'add_synonym' => 'Add Synonym',
         'remove_synonym' => 'Remove Synonym',
+
+        'synonym_name' => 'Name',
+        'synonym_author' => 'Author',
     ],
 
     'field_observations' => [

@@ -124,20 +124,22 @@ class CustomTaxaExport extends BaseExport
             'id' => $item->id,
             $item->rank => $item->name,
             'author' => $item->author,
+            'fe_old_id' => $item->fe_old_id,
+            'fe_id' => $item->fe_id,
             'restricted' => $item->restricted ? __('Yes') : __('No'),
             'allochthonous' => $item->allochthonous ? __('Yes') : __('No'),
             'invasive' => $item->invasive ? __('Yes') : __('No'),
-            'fe_old_id' => $item->fe_old_id,
-            'fe_id' => $item->fe_id,
+            'uses_atlas_codes' => $item->uses_atlas_codes ? __('Yes') : __('No'),
             'stages' => $item->stages->map->name_translation->implode('; '),
             'conservation_legislations' => $item->conservationLegislations->map->name->implode('; '),
             'conservation_documents' => $item->conservationDocuments->map->name->implode('; '),
+            'countries' => $item->countries->map->name->implode('; '),
             'red_lists' => $item->redLists->map(function ($redList) {
                 return "{$redList->name} [{$redList->pivot->category}]";
             })->implode('; '),
-            'uses_atlas_codes' => $item->uses_atlas_codes ? __('Yes') : __('No'),
-            'synonyms' => $item->synonyms->map->name->implode('; '),
-            'countries' => $item->countries->map->name->implode('; '),
+            'synonyms' => $item->synonyms->map(function ($synonym) {
+                return "{$synonym->name} [{$synonym->author}]";
+            })->implode('; '),
         ];
 
         foreach ($item->ancestors as $ancestor) {
