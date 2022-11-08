@@ -61,5 +61,13 @@ class RedListSeeder extends Seeder
             'sr' => ['name' => 'Европска унија'],
             'sr-Latn' => ['name' => 'Evropska unija'],
         ]);
+
+        RedList::firstOrCreate(['slug' => 'mediterranean'])->update([
+            'bs' => ['name' => 'Mediteran'],
+            'en' => ['name' => 'Mediterranean'],
+            'hr' => ['name' => 'Mediteran'],
+            'sr' => ['name' => 'Mediteran'],
+            'sr-Latn' => ['name' => 'Медитеран'],
+        ]);
     }
 }
