@@ -198,10 +198,10 @@ class Taxon extends Model
      *
      * @param string $name
      * @param string $rank,
-     * @param string $ancestor
+     * @param string|null $ancestor
      * @return \App\Taxon
      */
-    public static function findByRankNameAndAncestor(string $name, string $rank, string $ancestor)
+    public static function findByRankNameAndAncestor(string $name, string $rank, ?string $ancestor)
     {
         $build = static::where(['name' => $name, 'rank' => $rank]);
 
