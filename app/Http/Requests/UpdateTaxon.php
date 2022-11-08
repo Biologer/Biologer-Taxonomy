@@ -256,10 +256,11 @@ class UpdateTaxon extends FormRequest
 
     protected function updateSynonyms(Taxon $taxon)
     {
-        $synonym_names = $this->input('synonym_names');
-        foreach ($synonym_names as $k => $v) {
+        $new_synonyms = $this->input('new_synonyms');
+        foreach ($new_synonyms as $k => $v) {
             $synonym = new Synonym([
-                'name' => $v,
+                'name' => $v['name'],
+                'author' => $v['author'],
                 'taxon_id' => $taxon->id,
             ]);
             $synonym->save();

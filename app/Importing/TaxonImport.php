@@ -488,17 +488,28 @@ class TaxonImport extends BaseImport
 
     private function createSynonyms(array $item, $taxon)
     {
-        $synonym_names = Arr::get($item, 'synonyms');
-        if (! $synonym_names) {
+        $synonyms = Arr::get($item, 'synonyms');
+        if (! $synonyms) {
             return;
         }
 
-        foreach (explode('; ', $synonym_names) as $name) {
-            $synonym = Synonym::firstOrCreate([
-                'name' => $name,
-                'taxon_id' => $taxon->id,
-            ]);
-            $synonym->save();
+        foreach (explode('; ', $synonyms) as $synonym) {
+            if (str_contains($synonym, ' [')) {
+                $s = explode(' [', $synonym);
+                $author = substr($s[1], 0, strlen($s[1]) - 1);
+                $new_synonym = Synonym::firstOrCreate([
+                    'name' => $s[0],
+                    'author' => $author ?: null,
+                    'taxon_id' => $taxon->id,
+                ]);
+            } else {
+                $new_synonym = Synonym::firstOrCreate([
+                    'name' => $synonym,
+                    'author' => null,
+                    'taxon_id' => $taxon->id,
+                ]);
+            }
+            $new_synonym->save();
         }
     }
 

@@ -85,6 +85,8 @@ return [
         'synonyms' => 'Sinonimi',
         'add_synonym' => 'Dodaj sinonim',
         'remove_synonym' => 'Obriši sinonim',
+        'synonym_name' => 'Naziv',
+        'synonym_author' => 'Autor',
     ],
 
     'field_observations' => [

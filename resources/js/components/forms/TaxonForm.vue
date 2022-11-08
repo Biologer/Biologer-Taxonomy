@@ -222,11 +222,17 @@
 
       <hr>
       <label class="label">{{ trans("labels.taxa.synonyms") }}</label>
+    <div class="columns">
+      <div class="column"><b>{{ trans("labels.taxa.synonym_name")}}</b></div>
+      <div class="column"><b>{{ trans("labels.taxa.synonym_author")}}</b></div>
+      <div class="column"></div>
+    </div>
       <div v-if="taxon.id != null">
           <div v-if="synonyms.length > 0">
               <b-field v-for="(synonym, index) in synonyms" :key="index">
                   <div class="columns">
-                      <div class="column is-half"><p>{{ synonym.name }}</p></div>
+                      <div class="column">{{ synonym.name }}</div>
+                      <div class="column">{{ synonym.author }}</div>
                       <div class="column">
                           <button type="button" class="delete" @click="removeSynonym(index, synonym.id)"
                               v-tooltip="{content: trans('labels.taxa.remove_synonym')}">
@@ -236,9 +242,10 @@
               </b-field>
           </div>
       </div>
-      <b-field v-for="(synonym, index) in synonymNames" :key="index">
+      <b-field v-for="(synonym, index) in newSynonyms" :key="index">
           <div class="columns">
-              <div class="column is-half"><p>{{ synonym }}</p></div>
+              <div class="column">{{ synonym.name }}</div>
+              <div class="column">{{ synonym.author }}</div>
               <div class="column">
                 <button type="button" class="delete" @click="removeSynonym(index, 0)"
                   v-tooltip="{content: trans('labels.taxa.remove_synonym')}">
@@ -250,6 +257,9 @@
       <div class="columns">
           <div class="column">
               <b-input maxlength="100" v-model="synonym_name" v-on:keydown.native.enter.prevent="addSynonym"/>
+          </div>
+          <div class="column">
+            <b-input maxlength="100" v-model="synonym_author" v-on:keydown.native.enter.prevent="addSynonym"/>
           </div>
           <div class="column">
               <button type="button" class="button is-primary" @click="addSynonym">
@@ -348,7 +358,7 @@ export default {
       type: Object,
       default: () => defaultTranslations()
     },
-    synonymNames: {
+    newSynonyms: {
       type: Array,
       default() {
         return [];
@@ -368,6 +378,7 @@ export default {
       selectedParent: null,
       chosenRedList: null,
       synonym_name: null,
+      synonym_author: null,
       synonyms: this.taxon.synonyms,
     }
   },
@@ -416,7 +427,7 @@ export default {
         reason: null,
         uses_atlas_codes: this.taxon.uses_atlas_codes,
         synonyms: this.taxon.synonyms,
-        synonym_names: this.synonymNames,
+        new_synonyms: this.newSynonyms,
         removed_synonyms: this.removedSynonyms,
       }, {
         resetOnSuccess: false
@@ -425,7 +436,7 @@ export default {
 
     removeSynonym(index, id) {
       if (id === 0){
-        this.$delete(this.synonymNames, index);
+        this.$delete(this.newSynonyms, index);
         return;
       }
       this.removedSynonyms.push(id);
@@ -434,8 +445,9 @@ export default {
 
     addSynonym(){
       if (!this.synonym_name) return;
-      this.synonymNames.push(this.synonym_name)
+      this.newSynonyms.push({'name': this.synonym_name, 'author': this.synonym_author});
       this.synonym_name = null;
+      this.synonym_author = null;
     },
 
     /**
