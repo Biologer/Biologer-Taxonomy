@@ -290,7 +290,7 @@ class UpdateTaxon extends FormRequest
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {
-            if ($country->active == false) {
+            if (!$country->active) {
                 continue;
             }
 
