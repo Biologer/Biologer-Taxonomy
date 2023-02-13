@@ -201,11 +201,11 @@ class Taxon extends Model
      * @param string|null $ancestor
      * @return \App\Taxon
      */
-    public static function findByRankNameAndAncestor(string $name, string $rank, ?string $ancestor)
+    public static function findByRankNameAndAncestor(string $name, string $rank, ?string $ancestor = null)
     {
         $build = static::where(['name' => $name, 'rank' => $rank]);
 
-        if ( $build->count() > 1) {
+        if ($build->count() > 1) {
             return $build->where('ancestors_names', 'like', $ancestor)->first();
         }
 

@@ -106,6 +106,8 @@ class UpdateTaxon extends FormRequest
                 'description', 'native_name',
             ]))));
 
+            $taxon = $taxon->load(['parent']);
+
             $this->updateSynonyms($taxon);
             $this->syncRelations($taxon);
 
@@ -288,6 +290,9 @@ class UpdateTaxon extends FormRequest
     protected function sendUpdatesToLocalDatabases(Taxon $taxon)
     {
         $data['taxon'] = $taxon->toArray();
+        $data['parent'] = "";
+        if ($taxon->parent_id)
+            $data['parent'] = $taxon['parent'];
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {
