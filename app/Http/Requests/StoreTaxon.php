@@ -14,6 +14,7 @@ use App\Taxon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class StoreTaxon extends FormRequest
@@ -139,6 +140,7 @@ class StoreTaxon extends FormRequest
                 $this->createSynonyms($taxon);
                 $this->syncRelations($taxon);
                 $this->logCreatedActivity($taxon);
+                $this->sendNewTaxonToLocalDatabases($taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries'));
             });
         });
     }
@@ -159,6 +161,7 @@ class StoreTaxon extends FormRequest
     private function createSynonyms($taxon)
     {
         $new_synonyms = $this->input('newSynonyms');
+        /*
         foreach ($new_synonyms as $k => $v) {
             $synonym = Synonym::firstOrCreate([
                 'name' => $v['name'],
@@ -166,6 +169,36 @@ class StoreTaxon extends FormRequest
                 'taxon_id' => $taxon->id,
             ]);
             $synonym->save();
+        }
+        */
+    }
+
+    private function sendNewTaxonToLocalDatabases($taxon)
+    {
+        $data['taxon'] = $taxon->toArray();
+        $data['parent'] = "";
+        if ($taxon->parent_id)
+            $data['parent'] = $taxon['parent'];
+        $data['taxon']['reason'] = $this->input('reason');
+
+        foreach ($taxon->countries()->get() as $country) {
+            if (!$country->active) {
+                continue;
+            }
+
+            foreach ($country->redLists()->get()->toArray() as $item) {
+                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+            }
+
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            http::post($country->url.'/api/taxonomy/new', $data);
         }
     }
 }
