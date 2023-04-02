@@ -2,7 +2,6 @@
 
 return [
     'Bosnian' => 'Bosanski',
-    'Bosnian (Cyrillic)' => 'Bosanski (ćirilica)',
     'English' => 'Engleski',
     'Montenegrin' => 'Crnogorski',
     'Serbian (Latin)' => 'Srpski (latinica)',
