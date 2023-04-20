@@ -36,7 +36,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'DS, Aneks 2', 'description' => 'Direktiva o staništima, Aneks 2'],
             'sr' => ['name' => 'ДС, Анекс 2', 'description' => 'Директива о стаништима, Aнекс 2'],
             'sr-Latn' => ['name' => 'DS, Aneks 2', 'description' => 'Direktiva o staništima, Aneks 2'],
-            'sr-Latn-ME' => ['name' => 'DS, Aneks 2', 'description' => 'Direktiva o staništima, Aneks 2'],
+            'me' => ['name' => 'DS, Aneks 2', 'description' => 'Direktiva o staništima, Aneks 2'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'habitat-4'])->update([
@@ -45,7 +45,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'DS, Aneks 4', 'description' => 'Direktiva o staništima, Aneks 4'],
             'sr' => ['name' => 'ДС, Анекс 4', 'description' => 'Директива о стаништима, Анекс 4'],
             'sr-Latn' => ['name' => 'DS, Aneks 4', 'description' => 'Direktiva o staništima, Aneks 4'],
-            'sr-Latn-ME' => ['name' => 'DS, Aneks 4', 'description' => 'Direktiva o staništima, Aneks 4'],
+            'me' => ['name' => 'DS, Aneks 4', 'description' => 'Direktiva o staništima, Aneks 4'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'habitat-5'])->update([
@@ -54,7 +54,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'DS, Aneks 5', 'description' => 'Direktiva o staništima, Aneks 5'],
             'sr' => ['name' => 'ДС, Анекс 5', 'description' => 'Директива о стаништима, Анекс 5'],
             'sr-Latn' => ['name' => 'DS, Aneks 5', 'description' => 'Direktiva o staništima, Aneks 5'],
-            'sr-Latn-ME' => ['name' => 'DS, Aneks 5', 'description' => 'Direktiva o staništima, Aneks 5'],
+            'me' => ['name' => 'DS, Aneks 5', 'description' => 'Direktiva o staništima, Aneks 5'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bern-1'])->update([
@@ -63,7 +63,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Bern, Aneks 1', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene biljne vrste'],
             'sr' => ['name' => 'Берн, Aнекс 1', 'description' => 'Конвенција о очувању европске дивље флоре, фауне и природних станишта - Строго заштићене биљне врсте'],
             'sr-Latn' => ['name' => 'Bern, Aneks 1', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene biljne vrste'],
-            'sr-Latn-ME' => ['name' => 'Bern, Aneks 1', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene biljne vrste'],
+            'me' => ['name' => 'Bern, Aneks 1', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene biljne vrste'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bern-2'])->update([
@@ -72,7 +72,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Bern, Aneks 2', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene životinjske vrste'],
             'sr' => ['name' => 'Берн, Aнекс 2', 'description' => 'Конвенција о очувању европске дивље флоре, фауне и природних станишта - Строго заштићене животињске врсте'],
             'sr-Latn' => ['name' => 'Bern, Aneks 2', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene životinjske vrste'],
-            'sr-Latn-ME' => ['name' => 'Bern, Aneks 2', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene životinjske vrste'],
+            'me' => ['name' => 'Bern, Aneks 2', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Strogo zaštićene životinjske vrste'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bern-3'])->update([
@@ -81,7 +81,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Bern, Aneks 3', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Zaštićene životinjske vrste'],
             'sr' => ['name' => 'Берн, Aнекс 3', 'description' => 'Конвенција о очувању европске дивље флоре, фауне и природних станишта - Заштићене животињске врсте'],
             'sr-Latn' => ['name' => 'Bern, Aneks 3', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Zaštićene životinjske vrste'],
-            'sr-Latn-ME' => ['name' => 'Bern, Aneks 3', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Zaštićene životinjske vrste'],
+            'me' => ['name' => 'Bern, Aneks 3', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Zaštićene životinjske vrste'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bern-resolution-6-1'])->update([
@@ -90,7 +90,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Bern rezolucija 6', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Vrste koje zahtevaju zaštitu specifičnih staništa'],
             'sr' => ['name' => 'Берн резолуција 6', 'description' => 'Конвенција о очувању европске дивље флоре, фауне и природних станишта - Врсте које захтевају заштиту специфичних станишта'],
             'sr-Latn' => ['name' => 'Bern rezolucija 6', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Vrste koje zahtevaju zaštitu specifičnih staništa'],
-            'sr-Latn-ME' => ['name' => 'Bern rezolucija 6', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Vrste koje zahtevaju zaštitu specifičnih staništa'],
+            'me' => ['name' => 'Bern rezolucija 6', 'description' => 'Konvencija o očuvanju evropske divlje flore, faune i prirodnih staništa - Vrste koje zahtevaju zaštitu specifičnih staništa'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'cites-1'])->update([
@@ -99,7 +99,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'CITES, Aneks 1', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 1, vrste koje možda nisu ugrožene ali to mogu postati'],
             'sr' => ['name' => 'ЦИТЕС, Aнекс 1', 'description' => 'Конвенција о међународној трговини угроженим дивљим врстама биљака и животиња - Анекс 1, врсте које можда нису угрожене али то могу постати'],
             'sr-Latn' => ['name' => 'CITES, Aneks 1', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 1, vrste koje možda nisu ugrožene ali to mogu postati'],
-            'sr-Latn-ME' => ['name' => 'CITES, Aneks 1', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 1, vrste koje možda nisu ugrožene ali to mogu postati'],
+            'me' => ['name' => 'CITES, Aneks 1', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 1, vrste koje možda nisu ugrožene ali to mogu postati'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'cites-2'])->update([
@@ -108,7 +108,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'CITES, Aneks 2', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 2, vrste koje su najugroženije'],
             'sr' => ['name' => 'ЦИТЕС, Aнекс 2', 'description' => 'Конвенција о међународној трговини угроженим дивљим врстама биљака и животиња - Анекс 2, врсте које су најугроженије'],
             'sr-Latn' => ['name' => 'CITES, Aneks 2', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 2, vrste koje su najugroženije'],
-            'sr-Latn-ME' => ['name' => 'CITES, Aneks 2', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 2, vrste koje su najugroženije'],
+            'me' => ['name' => 'CITES, Aneks 2', 'description' => 'Konvencija o međunarodnoj trgovini ugroženim divljim vrstama biljaka i životinja - Aneks 2, vrste koje su najugroženije'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'birds-1'])->update([
@@ -117,7 +117,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Direktiva o pticama, Aneks 1', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica - Aneks 1'],
             'sr' => ['name' => 'Директива о птицама, Анекс 1', 'description' => 'Директива 2009/147/EC Европског парламента и Савета Европе од 30. новембра 2009. о очувању дивљих птица - Анекс 1'],
             'sr-Latn' => ['name' => 'Direktiva o pticama, Aneks 1', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 1'],
-            'sr-Latn-ME' => ['name' => 'Direktiva o pticama, Aneks 1', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 1'],
+            'me' => ['name' => 'Direktiva o pticama, Aneks 1', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 1'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'birds-2a'])->update([
@@ -126,7 +126,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Direktiva o pticama, Aneks 2a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica - Aneks 2a'],
             'sr' => ['name' => 'Директива о птицама, Анекс 2а', 'description' => 'Директива 2009/147/EC Европског парламента и Савета Европе од 30. новембра 2009. о очувању дивљих птица - Анекс 2a'],
             'sr-Latn' => ['name' => 'Direktiva o pticama, Aneks 2a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2a'],
-            'sr-Latn-ME' => ['name' => 'Direktiva o pticama, Aneks 2a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2a'],
+            'me' => ['name' => 'Direktiva o pticama, Aneks 2a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2a'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'birds-2b'])->update([
@@ -135,7 +135,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Direktiva o pticama, Aneks 2b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica - Aneks 2b'],
             'sr' => ['name' => 'Директива о птицама, Анекс 2б', 'description' => 'Директива 2009/147/EC Европског парламента и Савета Европе од 30. новембра 2009. о очувању дивљих птица - Анекс 2б'],
             'sr-Latn' => ['name' => 'Direktiva o pticama, Aneks 2b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2b'],
-            'sr-Latn-ME' => ['name' => 'Direktiva o pticama, Aneks 2b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2b'],
+            'me' => ['name' => 'Direktiva o pticama, Aneks 2b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 2b'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'birds-3a'])->update([
@@ -144,7 +144,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Direktiva o pticama, Aneks 3a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica - Aneks 3a'],
             'sr' => ['name' => 'Директива о птицама, Анекс 3а', 'description' => 'Директива 2009/147/EC Европског парламента и Савета Европе од 30. новембра 2009. о очувању дивљих птица - Анекс 3a'],
             'sr-Latn' => ['name' => 'Direktiva o pticama, Aneks 3a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3a'],
-            'sr-Latn-ME' => ['name' => 'Direktiva o pticama, Aneks 3a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3a'],
+            'me' => ['name' => 'Direktiva o pticama, Aneks 3a', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3a'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'birds-3b'])->update([
@@ -153,7 +153,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'Direktiva o pticama, Aneks 3b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica - Aneks 3b'],
             'sr' => ['name' => 'Директива о птицама, Анекс 3б', 'description' => 'Директива 2009/147/EC Европског парламента и Савета Европе од 30. новембра 2009. о очувању дивљих птица - Анекс 3б'],
             'sr-Latn' => ['name' => 'Direktiva o pticama, Aneks 3b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3b'],
-            'sr-Latn-ME' => ['name' => 'Direktiva o pticama, Aneks 3b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3b'],
+            'me' => ['name' => 'Direktiva o pticama, Aneks 3b', 'description' => 'Direktiva 2009/147/EC Evropskog parlamenta i Saveta Evrope od 30. novembra 2009. o očuvanju divljih ptica- Aneks 3b'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bonn-1'])->update([
@@ -162,7 +162,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'CMS, Aneks 1', 'description' => 'Konvencija o zaštiti migratornih vrsta divljih životinja ili Bonska konvencija - Aneks 1'],
             'sr' => ['name' => 'ЦМС, Анекс 1', 'description' => 'Конвенција о очувању миграторних врста дивљих животиња ili Бонска конвенција - Анекс 1'],
             'sr-Latn' => ['name' => 'CMS, Aneks 1', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 1'],
-            'sr-Latn-ME' => ['name' => 'CMS, Aneks 1', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 1'],
+            'me' => ['name' => 'CMS, Aneks 1', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 1'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'bonn-2'])->update([
@@ -171,7 +171,7 @@ class ConservationLegislationsTableSeeder extends Seeder
             'hr' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvencija o zaštiti migratornih vrsta divljih životinja ili Bonska konvencija - Aneks 2'],
             'sr' => ['name' => 'ЦМС, Анекс 2', 'description' => 'Конвенција о очувању миграторних врста дивљих животиња ili Бонска конвенција - Анекс 2'],
             'sr-Latn' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
-            'sr-Latn-ME' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
+            'me' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'croatia-1'])->update([
