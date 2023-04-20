@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\ConservationLegislation;
 use Illuminate\Database\Seeder;
 
-class ConservationLegislationSeeder extends Seeder
+class ConservationLegislationsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -180,6 +180,7 @@ class ConservationLegislationSeeder extends Seeder
             'hr' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
             'sr' => ['name' => 'Заштићен у Хрватској', 'description' => ''],
             'sr-Latn' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
+            'sr-Latn-ME' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
         ]);
     }
 }
