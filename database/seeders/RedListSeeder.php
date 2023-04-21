@@ -20,6 +20,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Globalna'],
             'sr' => ['name' => 'Глобална'],
             'sr-Latn' => ['name' => 'Globalna'],
+            'me' => ['name' => 'Globalna'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'europe'])->update([
@@ -28,6 +29,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Europa'],
             'sr' => ['name' => 'Европа'],
             'sr-Latn' => ['name' => 'Evropa'],
+            'me' => ['name' => 'Evropa'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'serbia'])->update([
@@ -36,6 +38,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Srbija'],
             'sr' => ['name' => 'Србија'],
             'sr-Latn' => ['name' => 'Srbija'],
+            'me' => ['name' => 'Srbija'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'balkans'])->update([
@@ -44,6 +47,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Balkan'],
             'sr' => ['name' => 'Балкан'],
             'sr-Latn' => ['name' => 'Balkan'],
+            'me' => ['name' => 'Balkan'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'croatia'])->update([
@@ -52,6 +56,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Hrvatska'],
             'sr' => ['name' => 'Хрватска'],
             'sr-Latn' => ['name' => 'Hrvatska'],
+            'me' => ['name' => 'Hrvatska'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'eu'])->update([
@@ -60,6 +65,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Europska unija'],
             'sr' => ['name' => 'Европска унија'],
             'sr-Latn' => ['name' => 'Evropska unija'],
+            'me' => ['name' => 'Evropska unija'],
         ]);
 
         RedList::firstOrCreate(['slug' => 'mediterranean'])->update([
@@ -68,6 +74,7 @@ class RedListSeeder extends Seeder
             'hr' => ['name' => 'Mediteran'],
             'sr' => ['name' => 'Mediteran'],
             'sr-Latn' => ['name' => 'Медитеран'],
+            'me' => ['name' => 'Медитеран'],
         ]);
     }
 }
