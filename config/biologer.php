@@ -56,4 +56,5 @@ return [
     'taxonomy_key_rs' => env('API_KEY_SERBIA', ''),
     'taxonomy_key_hr' => env('API_KEY_CROATIA', ''),
     'taxonomy_key_ba' => env('API_KEY_BOSNIA', ''),
+    'taxonomy_key_me' => env('API_KEY_MONTENEGRO', ''),
 ];

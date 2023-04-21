@@ -14,6 +14,7 @@ class Taxonomy
             'rs' => config('biologer.taxonomy_key_rs'),
             'hr' => config('biologer.taxonomy_key_hr'),
             'ba' => config('biologer.taxonomy_key_ba'),
+            'me' => config('biologer.taxonomy_key_me'),
             'test' => config('biologer.taxonomy_key_test'),
         ];
 

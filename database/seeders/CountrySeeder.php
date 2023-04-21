@@ -31,5 +31,11 @@ class CountrySeeder extends Seeder
             'code' => 'ba',
             'url' => 'https://biologer.ba',
         ]);
+
+        Country::firstOrCreate([
+            'name' => 'Montenegro',
+            'code' => 'me',
+            'url' => 'https://biologer.me',
+        ]);
     }
 }
