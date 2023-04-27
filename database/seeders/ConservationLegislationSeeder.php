@@ -177,12 +177,12 @@ class ConservationLegislationSeeder extends Seeder
         ]);
 
         ConservationLegislation::firstOrCreate(['slug' => 'croatia-1'])->update([
-            'bs' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
+            'bs' => ['name' => 'Strogo zaštićena (Hrvatska)', 'description' => ''],
             'en' => ['name' => 'Protected in Croatia', 'description' => ''],
-            'hr' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
-            'sr' => ['name' => 'Заштићен у Хрватској', 'description' => ''],
-            'sr-Latn' => ['name' => 'Zašitećen u Hrvatskoj', 'description' => ''],
-            'me' => ['name' => 'CMS, Aneks 2', 'description' => 'Konvenciјa o očuvanju migratornih vrsta divljih životinja ili Bonska konvenciјa - Aneks 2'],
+            'hr' => ['name' => 'Strogo zaštićena (Hrvatska)', 'description' => ''],
+            'sr' => ['name' => 'Строго заштићена (Хрватска)', 'description' => ''],
+            'sr-Latn' => ['name' => 'Strogo zaštićena (Hrvatska)', 'description' => ''],
+            'me' => ['name' => 'Strogo zaštićena (Hrvatska)', 'description' => ''],
         ]);
     }
 }
