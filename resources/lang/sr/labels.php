@@ -176,7 +176,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Одабери колоне',
-        'select_csv_file' => 'Одабери CSV датотеку',
+        'select_import_file' => 'Одабери CSV/XLSX датотеку',
         'available' => 'Доступне',
         'chosen' => 'Одабране',
         'import' => 'Увези',

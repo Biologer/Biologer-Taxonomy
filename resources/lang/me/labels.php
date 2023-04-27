@@ -82,6 +82,10 @@ return [
 
         'atlas_codes' => 'Atlas kodovi',
         'uses_atlas_codes' => 'Koristi Atlas kodove',
+        'synonyms' => 'Sinonimi',
+        'synonym_name' => 'Sinonim',
+        'synonym_author' => 'Autor',
+        'add_synonym' => 'Dodaj sinonim',
     ],
 
     'field_observations' => [
@@ -171,7 +175,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Odaberi kolone',
-        'select_csv_file' => 'Odaberi CSV datoteku',
+        'select_import_file' => 'Odaberi CSV/XLSX datoteku',
         'available' => 'Dostupne',
         'chosen' => 'Odabrane',
         'import' => 'Uvezi',
@@ -181,6 +185,8 @@ return [
         'columns' => 'Kolone',
         'user' => 'Za korisnika',
         'approve_curated' => 'Potvrdi nalaze za taksone koje uređujem',
+        'replace' => 'Zamjeni postojeće podatke sa podacima iz uvoza',
+        'append' => 'Samo dodaj nedostajuće podatke iz uvoza, ali ne mjenjaj postojeće podatke',
     ],
 
     'announcements' => [

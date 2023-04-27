@@ -174,7 +174,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Odaberi kolone',
-        'select_csv_file' => 'Odaberi CSV datoteku',
+        'select_import_file' => 'Odaberi CSV/XLSX datoteku',
         'available' => 'Dostupne',
         'chosen' => 'Odabrane',
         'import' => 'Uvezi',
