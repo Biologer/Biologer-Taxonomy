@@ -206,7 +206,7 @@ class Taxon extends Model
         $build = static::where(['name' => $name, 'rank' => $rank]);
 
         if ($build->count() > 1) {
-            return $build->where('ancestors_names', 'like', $ancestor)->first();
+            return $build->where('ancestors_names', 'LIKE', "%{$ancestor}")->first();
         }
 
         return $build->first();
