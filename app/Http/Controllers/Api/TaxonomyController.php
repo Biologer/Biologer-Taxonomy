@@ -105,7 +105,6 @@ class TaxonomyController
 
                 continue;
             }
-
             $taxon->countries()->sync($country->id, false);
 
             $taxa[$id]['response'] = new TaxonResource($taxon->load([
