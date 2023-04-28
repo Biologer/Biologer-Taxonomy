@@ -98,10 +98,11 @@ class TaxonomyController
         $taxa = $input['taxa'];
 
         foreach ($taxa as $id => $item) {
-            $taxon = Taxon::findByRankNameAndAncestor($item['name'], $item['rank'], $item['ancestor_name']);
+            $taxon = Taxon::findByRankNameAndParent($item['name'], $item['rank'], $item['parent']);
 
             if ($taxon == null) {
                 $taxa[$id]['response'] = '';
+
                 continue;
             }
             $taxon->countries()->sync($country->id, false);
