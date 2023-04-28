@@ -192,10 +192,11 @@ class Taxon extends Model
         return static::where(['name' => $name, 'rank' => $rank])->first();
     }
 
+
     /**
-     * Find taxon by rank, name and ancestors.
+     * Find taxon by rank, name and parent.
      *
-     * @param string $name
+     * @param  string  $name
      * @return \App\Taxon
      */
     public static function findByRankNameAndParent($name, $rank, $parent)
