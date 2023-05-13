@@ -82,9 +82,11 @@ return [
 
         'atlas_codes' => 'Atlas kodovi',
         'uses_atlas_codes' => 'Koristi Atlas kodove',
+
         'synonyms' => 'Sinonimi',
         'add_synonym' => 'Dodaj sinonim',
-        'remove_synonym' => 'Obriši sinonim',
+        'synonym_name' => 'Unesi naziv sinonima',
+        'synonym_author' => 'Unesi autora sinonima',
     ],
 
     'field_observations' => [

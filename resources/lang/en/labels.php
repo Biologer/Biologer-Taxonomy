@@ -82,12 +82,11 @@ return [
 
         'atlas_codes' => 'Atlas Codes',
         'uses_atlas_codes' => 'Uses Atlas Codes',
-        'synonyms' => 'Synonyms',
-        'add_synonym' => 'Add Synonym',
-        'remove_synonym' => 'Remove Synonym',
 
-        'synonym_name' => 'Name',
-        'synonym_author' => 'Author',
+        'synonyms' => 'Synonyms',
+        'add_synonym' => 'Add synonym',
+        'synonym_name' => 'Insert synonyms name',
+        'synonym_author' => 'Insert synonyms author',
     ],
 
     'field_observations' => [

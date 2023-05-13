@@ -81,12 +81,11 @@ return [
 
         'atlas_codes' => 'Атлас кодови',
         'uses_atlas_codes' => 'Користи Атлас кодове',
+
         'synonyms' => 'Синоними',
         'add_synonym' => 'Додај синоним',
-        'remove_synonym' => 'Обриши синоним',
-
-        'synonym_name' => 'Назив',
-        'synonym_author' => 'Аутор',
+        'synonym_name' => 'Унеси назив синонима',
+        'synonym_author' => 'Унеси аутора синонима',
     ],
 
     'field_observations' => [
