@@ -9,7 +9,10 @@ use App\Http\Resources\TaxonResource;
 use App\RedList;
 use App\Support\Taxonomy;
 use App\Taxon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaxonomyController
 {
@@ -34,7 +37,7 @@ class TaxonomyController
      * Connect to this database, while providing important data for synchronization to work.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function connect(Request $request)
     {
@@ -61,7 +64,7 @@ class TaxonomyController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function disconnect(Request $request)
     {
@@ -83,7 +86,8 @@ class TaxonomyController
     /**
      * Allow local databases to search for taxa in taxonomy database.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
+     * @return array|Application|ResponseFactory|Response
      */
     public function sync(Request $request)
     {
@@ -102,6 +106,7 @@ class TaxonomyController
 
             if ($taxon == null) {
                 $taxa[$id]['response'] = '';
+
                 continue;
             }
             $taxon->countries()->sync($country->id, false);

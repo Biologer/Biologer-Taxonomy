@@ -61,7 +61,6 @@ class TaxaController
             'redListCategories' => collect(RedList::CATEGORIES),
             'stages' => Stage::all(),
             'synonyms' => $taxon->load(['synonyms']),
-            'synonym_names' => [],
             'countries' => Country::all(),
         ]);
     }

@@ -71,6 +71,8 @@ class UpdateTaxon extends FormRequest
             'uses_atlas_codes' => ['boolean'],
             'countries_ids' => ['nullable', 'array'],
             'countries_ids.*' => ['required', Rule::in(Country::pluck('id')->all())],
+            'synonyms' => ['array'],
+            'removed_synonyms' => ['array'],
         ];
     }
 
@@ -106,12 +108,14 @@ class UpdateTaxon extends FormRequest
                 'description', 'native_name',
             ]))));
 
-            $taxon = $taxon->load(['parent']);
-
             $this->updateSynonyms($taxon);
             $this->syncRelations($taxon);
 
             $this->logUpdatedActivity($taxon, $oldData);
+
+            $taxon->save();
+
+            $taxon = $taxon->load(['parent', 'synonyms']);
 
             $this->sendUpdatesToLocalDatabases($taxon);
 
@@ -258,23 +262,20 @@ class UpdateTaxon extends FormRequest
 
     protected function updateSynonyms(Taxon $taxon)
     {
-        $new_synonyms = $this->input('new_synonyms');
-        foreach ($new_synonyms as $k => $v) {
-            $synonym = new Synonym([
-                'name' => $v['name'],
-                'author' => $v['author'],
-                'taxon_id' => $taxon->id,
-            ]);
-            $synonym->save();
+        foreach ($this->input('removed_synonyms') as $removed) {
+            Synonym::find($removed['id'])->delete();
         }
 
-        $removed_synonyms = $this->input('removed_synonyms');
-        if (! $removed_synonyms) {
-            return;
-        }
-        foreach ($removed_synonyms as $id) {
-            $synonym = Synonym::find($id);
-            $synonym->delete();
+        foreach ($this->input('synonyms') as $synonym) {
+            if (isset($synonym['id'])) {
+                continue;
+            }
+            $s = Synonym::create([
+                'name' => $synonym['name'],
+                'author' => $synonym['author'],
+                'taxon_id' => $taxon->id,
+            ]);
+            $s->save();
         }
     }
 
@@ -290,13 +291,14 @@ class UpdateTaxon extends FormRequest
     protected function sendUpdatesToLocalDatabases(Taxon $taxon)
     {
         $data['taxon'] = $taxon->toArray();
-        $data['parent'] = "";
-        if ($taxon->parent_id)
+        $data['parent'] = '';
+        if ($taxon->parent_id) {
             $data['parent'] = $taxon['parent'];
+        }
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {
-            if (!$country->active) {
+            if (! $country->active) {
                 continue;
             }
 
@@ -312,7 +314,7 @@ class UpdateTaxon extends FormRequest
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url.'/api/taxa/sync', $data);
+            http::post($country->url.'/api/taxonomy/sync', $data);
         }
     }
 }

@@ -69,6 +69,7 @@ class StoreTaxon extends FormRequest
             'uses_atlas_codes' => ['boolean'],
             'countries_ids' => ['nullable', 'array'],
             'countries_ids.*' => ['required', Rule::in(Country::pluck('id')->all())],
+            'synonyms' => ['array'],
         ];
     }
 
@@ -160,29 +161,27 @@ class StoreTaxon extends FormRequest
 
     private function createSynonyms($taxon)
     {
-        $new_synonyms = $this->input('newSynonyms');
-        /*
-        foreach ($new_synonyms as $k => $v) {
-            $synonym = Synonym::firstOrCreate([
-                'name' => $v['name'],
-                'author' => $v['author'],
+        foreach ($this->input('synonyms') as $synonym) {
+            $s = Synonym::create([
+                'name' => $synonym['name'],
+                'author' => $synonym['author'],
                 'taxon_id' => $taxon->id,
             ]);
-            $synonym->save();
+            $s->save();
         }
-        */
     }
 
     private function sendNewTaxonToLocalDatabases($taxon)
     {
         $data['taxon'] = $taxon->toArray();
-        $data['parent'] = "";
-        if ($taxon->parent_id)
+        $data['parent'] = '';
+        if ($taxon->parent_id) {
             $data['parent'] = $taxon['parent'];
+        }
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {
-            if (!$country->active) {
+            if (! $country->active) {
                 continue;
             }
 
