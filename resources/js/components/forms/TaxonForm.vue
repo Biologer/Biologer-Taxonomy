@@ -8,6 +8,7 @@
             :key="country.id"
             v-model="form.countries_ids"
             :native-value="country.id"
+            :disabled="isDisabled(country)"
           >
             {{ country.name }}
           </b-checkbox>
@@ -540,7 +541,12 @@ export default {
       setTimeout(() => {
         _first(this.$refs[selector]).focus()
       }, 500)
+    },
+
+    isDisabled(country){
+      return country.active !== true;
     }
+
   },
   loadSynonyms: function() {
     if (!this.taxon.synonyms) return [];
