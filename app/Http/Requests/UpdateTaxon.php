@@ -322,7 +322,7 @@ class UpdateTaxon extends FormRequest
 
         foreach ($oldCountries as $country) {
             // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
-            if (! $taxon->countries()->contains($country)) {
+            if (! $taxon->countries()-get()->contains($country)) {
                 http::post($country->url.'/api/taxonomy/deselect', $data);
             }
         }
