@@ -324,6 +324,8 @@ class UpdateTaxon extends FormRequest
         foreach ($oldCountries as $country) {
             // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
             if (! $countries->contains($country)) {
+                $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+                
                 http::post($country->url.'/api/taxonomy/deselect', $data);
             }
         }
