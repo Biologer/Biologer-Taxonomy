@@ -299,8 +299,9 @@ class UpdateTaxon extends FormRequest
             $data['parent'] = $taxon['parent'];
         }
         $data['taxon']['reason'] = $this->input('reason');
+        $countries = $taxon->countries()->get();
 
-        foreach ($taxon->countries()->get() as $country) {
+        foreach ($countries as $country) {
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             if (! $country->active) {
@@ -322,7 +323,7 @@ class UpdateTaxon extends FormRequest
 
         foreach ($oldCountries as $country) {
             // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
-            if (! $taxon->countries()-get()->contains($country)) {
+            if (! $countries->contains($country)) {
                 http::post($country->url.'/api/taxonomy/deselect', $data);
             }
         }
