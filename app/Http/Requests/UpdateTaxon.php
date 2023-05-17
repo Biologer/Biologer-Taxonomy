@@ -109,6 +109,9 @@ class UpdateTaxon extends FormRequest
             ]))));
 
             $this->updateSynonyms($taxon);
+
+            $oldCountries = $taxon->countries()->get();
+
             $this->syncRelations($taxon);
 
             $this->logUpdatedActivity($taxon, $oldData);
@@ -117,7 +120,7 @@ class UpdateTaxon extends FormRequest
 
             $taxon = $taxon->load(['parent', 'synonyms']);
 
-            $this->sendUpdatesToLocalDatabases($taxon);
+            $this->sendUpdatesToLocalDatabases($taxon, $oldCountries);
 
             return $taxon;
         });
@@ -288,7 +291,7 @@ class UpdateTaxon extends FormRequest
                 && $oldValue->pluck('id')->diff($taxon->countries->pluck('id'))->isNotEmpty());
     }
 
-    protected function sendUpdatesToLocalDatabases(Taxon $taxon)
+    protected function sendUpdatesToLocalDatabases(Taxon $taxon, $oldCountries)
     {
         $data['taxon'] = $taxon->toArray();
         $data['parent'] = '';
@@ -298,7 +301,13 @@ class UpdateTaxon extends FormRequest
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
             if (! $country->active) {
+                // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
+                if ($oldCountries->contains($country)) {
+                    http::post($country->url.'/api/taxonomy/deselect', $data);
+                }
                 continue;
             }
 
@@ -311,8 +320,6 @@ class UpdateTaxon extends FormRequest
             foreach ($country->conservationDocuments()->get()->toArray() as $item) {
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
-
-            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             http::post($country->url.'/api/taxonomy/sync', $data);
         }
