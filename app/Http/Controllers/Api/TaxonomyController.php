@@ -13,6 +13,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 
 class TaxonomyController
 {
@@ -256,5 +257,19 @@ class TaxonomyController
         }
 
         return $syncIds;
+    }
+
+    public function removeTaxon($taxon) {
+        $data['taxon'] = $taxon->toArray();
+
+        foreach ($taxon->countries()->get() as $country) {
+            if (! $country->active) {
+                continue;
+            }
+
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            http::post($country->url.'/api/taxonomy/remove', $data);
+        }
     }
 }
