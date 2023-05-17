@@ -197,7 +197,7 @@ class StoreTaxon extends FormRequest
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url.'/api/taxonomy/new', $data);
+            http::post($country->url.'/api/taxonomy/sync', $data);
         }
     }
 }
