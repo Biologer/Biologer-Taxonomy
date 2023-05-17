@@ -138,6 +138,31 @@
         </template>
       </b-table-column>
 
+      <b-table-column field="synonyms" :label="trans('labels.taxa.synonyms')" sortable>
+        <template #default="{ row }">
+          <span v-if="row.synonyms.length > 0">
+            <b-tooltip :label="getSynonyms(row.synonyms)" multilined dashed>
+                {{ trans('labels.taxa.yes') }}
+            </b-tooltip>
+          </span>
+          <span v-else>
+            {{ trans('labels.taxa.no') }}
+          </span>
+        </template>
+        <template #header="{ column }">
+          <nz-sortable-column-header :column="column" :sort="{ field: sortField, order: sortOrder }" />
+        </template>
+      </b-table-column>
+
+      <b-table-column field="author" :label="trans('labels.taxa.author')" sortable>
+        <template #default="{ row }">
+          {{ row.author }}
+        </template>
+        <template #header="{ column }">
+          <nz-sortable-column-header :column="column" :sort="{ field: sortField, order: sortOrder }" />
+        </template>
+      </b-table-column>
+
       <b-table-column width="150" numeric v-slot="{ row }">
         <a @click="openActivityLogModal(row)" v-if="showActivityLog && row.activity && row.activity.length > 0" :title="trans('Activity Log')"><b-icon icon="history" /></a>
 
@@ -302,6 +327,10 @@ export default {
         this.total = 0
         this.loading = false
       })
+    },
+
+    getSynonyms(synonyms) {
+      return synonyms.map((synonym) => synonym.name).join(", ");
     },
 
     /*
