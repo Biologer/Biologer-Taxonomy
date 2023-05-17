@@ -304,10 +304,6 @@ class UpdateTaxon extends FormRequest
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             if (! $country->active) {
-                // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
-                if ($oldCountries->contains($country)) {
-                    http::post($country->url.'/api/taxonomy/deselect', $data);
-                }
                 continue;
             }
 
@@ -322,6 +318,13 @@ class UpdateTaxon extends FormRequest
             }
 
             http::post($country->url.'/api/taxonomy/sync', $data);
+        }
+
+        foreach ($oldCountries as $country) {
+            // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
+            if (! $taxon->countries()->contains($country)) {
+                http::post($country->url.'/api/taxonomy/deselect', $data);
+            }
         }
     }
 }
