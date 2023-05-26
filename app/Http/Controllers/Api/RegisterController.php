@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\ImageLicense;
-use App\License;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Http\Kernel;
@@ -32,8 +30,6 @@ class RegisterController
             'email' => ['required', 'string', 'email:rfc,filter', 'max:255', 'unique:users'],
             'institution' => ['nullable', 'string'],
             'password' => ['required', 'string', 'min:8'],
-            'data_license' => ['required', Rule::in(License::ids())],
-            'image_license' => ['required', Rule::in(ImageLicense::ids())],
         ])->after(function ($validator) use ($request) {
             if (isset($validator->failed()['client_id'])) {
                 return;
@@ -56,8 +52,6 @@ class RegisterController
             'institution' => $request->institution,
             'password' => Hash::make($request->password),
             'settings' => [
-                'data_license' => (int) $request->data_license,
-                'image_license' => (int) $request->image_license,
                 'language' => app()->getLocale(),
             ],
         ]);

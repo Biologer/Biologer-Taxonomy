@@ -59,8 +59,6 @@ class Settings
     private function defaultSettings()
     {
         return [
-            'data_license' => License::firstId(),
-            'image_license' => License::firstId(),
             'language' => app()->getLocale(),
             'notifications' => [
                 'field_observation_approved' => [

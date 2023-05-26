@@ -122,7 +122,7 @@
                                                     v-model="password"
                                                     v-on:input="checkIfFixedPassword"
                                                     v-on:blur="checkPassword"
-                                                />
+                                                ></input>
                                             </div>
 
                                             <p v-if="passwordIsInvalid" class="help is-danger" v-cloak>@{{ passwordError }}</p>
@@ -144,13 +144,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <hr>
-
-                                @include('partials.licenses', [
-                                    'dataLicense' => old('data_license', \App\License::firstId()),
-                                    'imageLicense' => old('image_license', \App\ImageLicense::firstId()),
-                                ])
 
                                 <hr>
 

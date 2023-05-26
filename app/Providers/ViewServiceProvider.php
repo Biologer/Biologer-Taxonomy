@@ -73,8 +73,6 @@ class ViewServiceProvider extends ServiceProvider
                     Menu::new()
                         ->addClass('menu-list')
                         ->route('preferences.general', trans('navigation.preferences.general'))
-                        ->route('preferences.license', trans('navigation.preferences.license'))
-                        ->route('preferences.notifications', trans('navigation.preferences.notifications'))
                         ->route('preferences.account', trans('navigation.preferences.account'))
                         ->setActiveClass('is-active')
                         ->setActiveClassOnLink()

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\ImageLicense;
-use App\License;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -58,8 +56,6 @@ class RegisterController extends Controller
             'institution' => ['nullable', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'captcha_verification_code' => ['required', 'captcha'],
-            'data_license' => ['required', Rule::in(License::ids())],
-            'image_license' => ['required', Rule::in(ImageLicense::ids())],
             'accept' => ['required', 'accepted'],
         ]);
     }
@@ -79,8 +75,6 @@ class RegisterController extends Controller
             'institution' => $data['institution'],
             'password' => Hash::make($data['password']),
             'settings' => [
-                'data_license' => (int) $data['data_license'],
-                'image_license' => (int) $data['image_license'],
                 'language' => app()->getLocale(),
             ],
         ]);
