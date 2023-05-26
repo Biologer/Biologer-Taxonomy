@@ -33,17 +33,12 @@
                                 <a class="navbar-item" href="{{ route('pages.about.organisations') }}">
                                     {{ __('navigation.organisations') }}
                                 </a>
-                                <a class="navbar-item" href="{{ route('pages.about.local-community') }}">
-                                    {{ __('navigation.local_community') }}
-                                </a>
+
                                 <a class="navbar-item" href="{{ route('pages.about.biodiversity-data') }}">
                                     {{ __('navigation.biodiversity_data') }}
                                 </a>
                                 <a class="navbar-item" href="{{ route('pages.about.development-supporters') }}">
                                     {{ __('navigation.development_supporters') }}
-                                </a>
-                                <a class="navbar-item" href="{{ route('pages.about.stats') }}">
-                                    {{ __('navigation.stats') }}
                                 </a>
                             </div>
                         </div>
