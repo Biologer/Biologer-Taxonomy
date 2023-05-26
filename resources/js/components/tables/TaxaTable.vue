@@ -141,8 +141,9 @@
       <b-table-column field="synonyms" :label="trans('labels.taxa.synonyms')" sortable>
         <template #default="{ row }">
           <span v-if="row.synonyms.length > 0">
+            {{ trans('labels.taxa.yes') }}
             <b-tooltip :label="getSynonyms(row.synonyms)" multilined dashed>
-                {{ trans('labels.taxa.yes') }}
+                <b-icon icon="comment"></b-icon>
             </b-tooltip>
           </span>
           <span v-else>
