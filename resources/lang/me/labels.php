@@ -87,6 +87,8 @@ return [
         'add_synonym' => 'Dodaj sinonim',
         'synonym_name' => 'Unesi naziv sinonima',
         'synonym_author' => 'Unesi autora sinonima',
+
+        'countries' => 'Države',
     ],
 
     'field_observations' => [
