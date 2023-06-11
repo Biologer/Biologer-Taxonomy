@@ -73,14 +73,6 @@ class CustomTaxaExport extends BaseExport
                 'label' => trans('labels.taxa.uses_atlas_codes'),
                 'value' => 'uses_atlas_codes',
             ],
-            [
-                'label' => trans('labels.taxa.synonyms'),
-                'value' => 'synonyms',
-            ],
-            [
-                'label' => trans('labels.taxa.countries'),
-                'value' => 'countries',
-            ],
         ])->concat($locales->map(function ($locale, $localeCode) {
             $nativeName = trans('labels.taxa.native_name');
             $localeTranslation = trans('languages.'.$locale['name']);
@@ -97,7 +89,16 @@ class CustomTaxaExport extends BaseExport
                 'label' => "{$description} - {$localeTranslation}",
                 'value' => 'description_'.Str::snake($localeCode),
             ];
-        }));
+        }))->concat([
+            [
+                'label' => trans('labels.taxa.synonyms'),
+                'value' => 'synonyms',
+            ],
+            [
+                'label' => trans('labels.taxa.countries'),
+                'value' => 'countries',
+            ],
+        ]);
     }
 
     /**

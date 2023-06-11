@@ -175,6 +175,11 @@ class TaxonImport extends BaseImport
                 'value' => 'synonyms',
                 'required' => false,
             ],
+            [
+                'label' => trans('labels.taxa.countries'),
+                'value' => 'countries',
+                'required' => false,
+            ],
         ]);
     }
 
