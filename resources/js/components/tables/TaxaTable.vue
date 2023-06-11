@@ -195,7 +195,7 @@
 </template>
 
 <style>
-.dotchar {
+.middot {
   color: #d6d6d6;
 }
 </style>
@@ -445,7 +445,7 @@ export default {
     },
 
     changeSpaceIntoDot(text) {
-      return text.replace(/\s/g, '<span class="dotchar">⸱</span>');
+      return text.replace(/\s/g, '<span class="middot">&middot;</span>');
     }
   }
 }
