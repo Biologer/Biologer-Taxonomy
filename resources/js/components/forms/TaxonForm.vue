@@ -31,7 +31,6 @@
         />
       </div>
 
-
       <div class="column is-5">
         <b-field
           :label="trans('labels.taxa.name')"
@@ -39,7 +38,7 @@
           :type="form.errors.has('name') ? 'is-danger' : ''"
           :message="form.errors.has('name') ? form.errors.first('name') : ''"
         >
-          <b-input v-model="form.name" />
+          <b-input v-model.trim="sanitizedName"/>
         </b-field>
       </div>
 
@@ -221,7 +220,8 @@
       </b-checkbox>
     </b-field>
 
-      <hr>
+    <hr>
+
     <b-field
       :label="trans('labels.taxa.synonyms')"
       :type="form.errors.has('synonyms') ? 'is-danger' : null"
@@ -410,6 +410,15 @@ export default {
 
     supportedLocales() {
       return window.App.supportedLocales
+    },
+
+    sanitizedName: {
+      get() {
+        return this.form.name;
+      },
+      set(value) {
+        this.form.name = value.replace(/\s+/g, ' ').trim();
+      }
     }
   },
 
@@ -418,6 +427,13 @@ export default {
       if (this.shouldResetRank(value)) {
         this.form.rank = null
       }
+    },
+
+    'form.name': {
+      handler(value) {
+        this.sanitizedName = value;
+      },
+      immediate: true
     }
   },
 
