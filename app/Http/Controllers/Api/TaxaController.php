@@ -85,6 +85,9 @@ class TaxaController
      */
     public function destroy(Taxon $taxon)
     {
+        if ($taxon->children()->count() > 0) {
+            return response()->json($taxon->children()->get(), 403);
+        }
         (new TaxonomyController())->removeTaxon($taxon);
         $taxon->delete();
 

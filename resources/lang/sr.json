@@ -63,5 +63,7 @@
     "You account has been deleted.": "Ваш кориснички налог је обрисан.",
     "This action is irreversible, once an account is deleted it cannot be restored.": "Ова акција је неповратна, једном када је кориснички налог обрисан не може се више вратити.",
     "Are you sure you want to delete your account?": "Да ли сте сигурни да желите да обришете Ваш кориснички налог?",
-    "Loading...": "Учитава се..."
+    "Loading...": "Учитава се...",
+    "Unable to delete the taxon because these taxa depends on it: ": "Не могу да обришем таксон зато што ови таксони зависе од њега: ",
+    "Please assign them to a new parents and then delete this taxon.": "Доделите их неком другом родитељу, а затим обришите овај таксон."
 }

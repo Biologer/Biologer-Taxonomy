@@ -377,7 +377,25 @@ export default {
         })
 
         this.loadAsyncData()
-      }).catch(error => { console.error(error) })
+      }).catch(error => {
+        if (error.response && error.response.status === 403) {
+          const errorData = error.response.data;
+
+          let errorMessage = this.trans('Unable to delete the taxon because these taxa depends on it: ');
+          errorData.forEach(obj => {
+            const { id, name } = obj;
+            errorMessage += `<b>${name}</b> (ID: ${id}), `;
+          });
+          errorMessage = errorMessage.slice(0, -2); // Remove the trailing comma and space
+          errorMessage += '<br><br>' + this.trans("Please assign them to a new parents and then delete this taxon.")
+          this.$buefy.dialog.alert({
+            message: errorMessage,
+            type: 'is-danger'
+          });
+        } else {
+          console.error(error)
+        }
+      })
     },
 
     editLink (row) {
