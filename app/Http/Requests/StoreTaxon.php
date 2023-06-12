@@ -92,6 +92,7 @@ class StoreTaxon extends FormRequest
      */
     protected function createTaxon()
     {
+        #TODO: strip_tags() on 'name'
         return Taxon::create(array_merge(array_map('trim', $this->only(['name', 'rank'])), $this->only([
             'parent_id', 'fe_id', 'author', 'fe_old_id', 'restricted', 'allochthonous', 'invasive', 'uses_atlas_codes',
         ]), Localization::transformTranslations($this->only([

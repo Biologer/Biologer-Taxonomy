@@ -102,6 +102,8 @@ class UpdateTaxon extends FormRequest
                 'conservationDocuments', 'countries',
             ])->toArray();
 
+            #TODO: strip_tags() on 'name'
+
             $taxon->update(array_merge(array_map('trim', $this->only(['name', 'rank'])), $this->only([
                 'parent_id', 'fe_old_id', 'fe_id', 'author', 'restricted', 'allochthonous', 'invasive', 'uses_atlas_codes',
             ]), Localization::transformTranslations($this->only([
