@@ -1,7 +1,7 @@
 <template>
   <form :action="action" method="POST" @submit.prevent="submitWithRedirect">
     <div>
-      <b-field :label="trans('labels.countries')">
+      <b-field :label="trans('labels.countries.selected')">
         <div class="block">
           <b-checkbox
             v-for="country in countries"

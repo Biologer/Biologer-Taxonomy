@@ -65,5 +65,8 @@
     "Are you sure you want to delete your account?": "Are you sure you want to delete your account?",
     "Loading...": "Loading...",
     "Unable to delete the taxon because these taxa depends on it: ": "Unable to delete the taxon because these taxa depends on it: ",
-    "Please assign them to a new parents and then delete this taxon.": "Please assign them to a new parents and then delete this taxon."
+    "Please assign them to a new parents and then delete this taxon.": "Please assign them to a new parents and then delete this taxon.",
+    "Taxa have been added to selected country": "Taxa have been added to selected country.",
+    "Taxa have been removed from selected country": "Taxa have been removed from selected country.",
+    "There was some problem while adding/removing taxa from country": "There was some problem while adding/removing taxa from country."
 }

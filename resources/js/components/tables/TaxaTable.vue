@@ -36,6 +36,15 @@
 
               <span>{{ trans('buttons.export') }}</span>
             </b-dropdown-item>
+
+            <b-dropdown-item
+              :disabled="!checkedRows.length"
+              @click="openCountryModal"
+            >
+              <b-icon icon="globe" class="has-text-grey" />
+
+              <span>{{ trans('buttons.countries') }}</span>
+            </b-dropdown-item>
           </b-dropdown>
         </div>
       </div>
@@ -191,6 +200,17 @@
         @done="onExportDone"
       />
     </b-modal>
+
+    <b-modal :active="showCountryModal" @close="showCountryModal = false" has-modal-card :can-cancel="[]">
+      <nz-country-modal
+        :checked="checkedIds"
+        :countries="countries"
+        :addurl="addCountryUrl"
+        :removeurl="removeCountryUrl"
+        @cancel="showCountryModal = false"
+        @done="onCountryDone"
+      />
+    </b-modal>
   </div>
 </template>
 
@@ -208,6 +228,7 @@ import NzTaxonAutocomplete from '@/components/inputs/TaxonAutocomplete'
 import NzPerPageSelect from '@/components/table/PerPageSelect'
 import NzSortableColumnHeader from '@/components/table/SortableColumnHeader'
 import NzExportModal from '@/components/exports/ExportModal'
+import NzCountryModal from '@/components/inputs/CountryModal'
 
 export default {
   name: 'nzTaxaTable',
@@ -218,7 +239,8 @@ export default {
     NzTaxonAutocomplete,
     NzPerPageSelect,
     NzSortableColumnHeader,
-    NzExportModal
+    NzExportModal,
+    NzCountryModal,
   },
 
   props: {
@@ -230,6 +252,7 @@ export default {
     listRoute: String,
     editRoute: String,
     deleteRoute: String,
+    countryRoute: String,
     empty: {
       type: String,
       default: 'Nothing here.'
@@ -237,7 +260,10 @@ export default {
     ranks: Array,
     showActivityLog: Boolean,
     exportColumns: Array,
-    exportUrl: String
+    exportUrl: String,
+    addCountryUrl: String,
+    removeCountryUrl: String,
+    countries: Array,
   },
 
   data() {
@@ -250,8 +276,10 @@ export default {
       page: 1,
       perPage: this.perPageOptions[0],
       checkedRows: [],
+      adding: false,
       activityLog: [],
-      showExportModal: false
+      showExportModal: false,
+      showCountryModal: false
     }
   },
 
@@ -360,6 +388,7 @@ export default {
     },
 
     confirmRemove(row) {
+
       this.$buefy.dialog.confirm({
         message: this.trans('Are you sure you want to delete this record?'),
         confirmText: this.trans('buttons.delete'),
@@ -441,6 +470,14 @@ export default {
           type: 'is-danger'
         })
       }
+    },
+
+    openCountryModal() {
+      this.showCountryModal = true
+    },
+
+    onCountryDone(){
+      this.showCountryModal = false
     },
 
     onTaxonSelect(taxon) {

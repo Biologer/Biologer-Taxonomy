@@ -26,4 +26,7 @@ return [
     'confirm' => 'Confirm',
     'export' => 'Export',
     'download' => 'Download',
+    'countries' => 'Countries',
+    'add_to_country' => 'Add to country',
+    'remove_from_country' => 'Deselect from country',
 ];

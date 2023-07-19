@@ -65,5 +65,8 @@
     "Are you sure you want to delete your account?": "Да ли сте сигурни да желите да обришете Ваш кориснички налог?",
     "Loading...": "Учитава се...",
     "Unable to delete the taxon because these taxa depends on it: ": "Не могу да обришем таксон зато што ови таксони зависе од њега: ",
-    "Please assign them to a new parents and then delete this taxon.": "Доделите их неком другом родитељу, а затим обришите овај таксон."
+    "Please assign them to a new parents and then delete this taxon.": "Доделите их неком другом родитељу, а затим обришите овај таксон.",
+    "Taxa have been added to selected country": "Таксони су додати у одабрану државу.",
+    "Taxa have been removed from selected country": "Таксони су деселектовани из одабране државе.",
+    "There was some problem while adding/removing taxa from country": "Дошло је до проблема услед обраде података."
 }

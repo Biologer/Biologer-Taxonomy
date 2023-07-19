@@ -22,6 +22,7 @@ class TaxaController
         return view('admin.taxa.index', [
             'exportColumns' => CustomTaxaExport::availableColumnData(),
             'ranks' => Taxon::getRankOptions(),
+            'countries' => Country::all(),
         ]);
     }
 

@@ -323,5 +323,9 @@ return [
         ],
     ],
 
-    'countries' => 'Države u kojima je zabeležen takson.',
+    'countries' => [
+        'selected' => 'Države u kojima je zabeležen takson.',
+        'title' => 'Odaberite državu',
+        'processing' => 'Obrada zahteva je u toku...',
+    ],
 ];

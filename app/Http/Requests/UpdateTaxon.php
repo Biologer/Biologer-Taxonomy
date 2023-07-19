@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\ConservationDocument;
 use App\ConservationLegislation;
 use App\Country;
+use App\Http\Controllers\Api\TaxonomyController;
 use App\RedList;
 use App\Rules\UniqueTaxonName;
 use App\Stage;
@@ -15,7 +16,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class UpdateTaxon extends FormRequest
@@ -120,7 +120,7 @@ class UpdateTaxon extends FormRequest
 
             $taxon = $taxon->load(['parent', 'synonyms']);
 
-            $this->sendUpdatesToLocalDatabases($taxon, $oldCountries);
+            (new TaxonomyController)->sendUpdatesToLocalDatabases($taxon, $oldCountries, $this->input('reason'));
 
             return $taxon;
         });
@@ -289,45 +289,5 @@ class UpdateTaxon extends FormRequest
         return $oldValue->count() !== $taxon->countries->count()
             || ($oldValue->isNotEmpty() && $taxon->countries->isNotEmpty()
                 && $oldValue->pluck('id')->diff($taxon->countries->pluck('id'))->isNotEmpty());
-    }
-
-    protected function sendUpdatesToLocalDatabases(Taxon $taxon, $oldCountries)
-    {
-        $data['taxon'] = $taxon->toArray();
-        $data['parent'] = '';
-        if ($taxon->parent_id) {
-            $data['parent'] = $taxon['parent'];
-        }
-        $data['taxon']['reason'] = $this->input('reason');
-        $countries = $taxon->countries()->get();
-
-        foreach ($countries as $country) {
-            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
-
-            if (! $country->active) {
-                continue;
-            }
-
-            foreach ($country->redLists()->get()->toArray() as $item) {
-                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
-            }
-            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
-                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
-            }
-            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
-                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
-            }
-
-            http::post($country->url.'/api/taxonomy/sync', $data);
-        }
-
-        foreach ($oldCountries as $country) {
-            // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
-            if (! $countries->contains($country)) {
-                $data['key'] = config('biologer.taxonomy_key_'.$country->code);
-
-                http::post($country->url.'/api/taxonomy/deselect', $data);
-            }
-        }
     }
 }

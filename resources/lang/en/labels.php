@@ -326,5 +326,9 @@ return [
         ],
     ],
 
-    'countries' => 'Countries where the taxon was noted.',
+    'countries' => [
+        'selected' => 'Countries that have selected taxa.',
+        'title' => 'Choose country',
+        'processing' => 'Your request is in processing state...',
+    ],
 ];
