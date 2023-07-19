@@ -50,6 +50,12 @@ Route::post('taxonomy/disconnect', [TaxonomyController::class, 'disconnect'])
 Route::post('taxonomy/sync', [TaxonomyController::class, 'sync'])
     ->name('api.taxonomy.sync');
 
+Route::post('taxonomy/add_country', [TaxonomyController::class, 'addToCountry'])
+    ->name('api.taxonomy.add_country');
+
+Route::post('taxonomy/remove_country', [TaxonomyController::class, 'removeFromCountry'])
+    ->name('api.taxonomy.remove_country');
+
 Route::middleware(['auth:api', 'verified'])->group(function () {
     // Taxa
     Route::get('taxa', [TaxaController::class, 'index'])

@@ -6,9 +6,12 @@
             list-route="api.taxa.index"
             edit-route="admin.taxa.edit"
             delete-route="api.taxa.destroy"
+            add-country-url="{{ route('api.taxonomy.add_country') }}"
+            remove-country-url="{{ route('api.taxonomy.remove_country') }}"
             export-url="{{ route('api.taxon-exports.store') }}"
             :export-columns="{{ $exportColumns }}"
             :ranks="{{ $ranks }}"
+            :countries=" {{ $countries }}"
             empty="{{ __('No data...') }}"
             show-activity-log
         >

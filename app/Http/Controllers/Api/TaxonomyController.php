@@ -11,12 +11,15 @@ use App\Support\Taxonomy;
 use App\Taxon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 
 class TaxonomyController
 {
+    use AuthorizesRequests;
+
     /**
      * Check connectivity to this database.
      */
@@ -259,7 +262,8 @@ class TaxonomyController
         return $syncIds;
     }
 
-    public function removeTaxon($taxon) {
+    public function removeTaxon($taxon)
+    {
         $data['taxon'] = $taxon->toArray();
 
         foreach ($taxon->countries()->get() as $country) {
@@ -270,6 +274,101 @@ class TaxonomyController
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             http::post($country->url.'/api/taxonomy/remove', $data);
+        }
+    }
+
+    public function addToCountry(Request $request)
+    {
+        $taxa = Taxon::with([
+            'conservationLegislations', 'redLists', 'conservationDocuments',
+            'stages', 'synonyms', 'parent',
+        ])->whereIn('id', request('taxa_ids'))->get();
+
+        foreach ($taxa as $taxon) {
+            $oldCountries = $taxon->countries()->get();
+
+            $taxon->countries()->syncWithoutDetaching(request('country_id', []));
+
+            $taxon->save();
+
+            $this->sendUpdatesToLocalDatabases($taxon, $oldCountries, 'Adding taxon to country');
+        }
+    }
+
+    public function removeFromCountry(Request $request)
+    {
+        $taxa = Taxon::with([
+            'conservationLegislations', 'redLists', 'conservationDocuments',
+            'stages', 'synonyms', 'parent',
+        ])->whereIn('id', request('taxa_ids'))->get();
+
+        foreach ($taxa as $taxon) {
+            $oldCountries = $taxon->countries()->get();
+
+            $country_ids = [];
+
+            foreach ($oldCountries as $country) {
+                $country_ids[] = $country->id;
+            }
+
+            $country_id = request('country_id');
+
+            if (($key = array_search($country_id, $country_ids)) !== false) {
+                unset($country_ids[$key]);
+            }
+
+            $taxon->countries()->sync($country_ids);
+
+            $taxon->save();
+
+            $this->sendUpdatesToLocalDatabases($taxon, $oldCountries, 'Removing from current country');
+        }
+    }
+
+    public function sendUpdatesToLocalDatabases(Taxon $taxon, $oldCountries, $reason, $country_id = null)
+    {
+        $data['taxon'] = $taxon->toArray();
+        $data['parent'] = '';
+        if ($taxon->parent_id) {
+            $data['parent'] = $taxon['parent'];
+        }
+        $data['taxon']['reason'] = $reason;
+        $countries = $taxon->countries()->get();
+
+        foreach ($countries as $country) {
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            if (! $country->active) {
+                continue;
+            }
+
+            foreach ($country->redLists()->get()->toArray() as $item) {
+                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+            }
+
+            http::post($country->url.'/api/taxonomy/sync', $data);
+        }
+
+        foreach ($oldCountries as $country) {
+            // Taxon should be disconnected from taxonomy if it was previously here, otherwise just continue..
+            if (! $countries->contains($country)) {
+                $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+                http::post($country->url.'/api/taxonomy/deselect', $data);
+            }
+        }
+
+        if ($country_id) {
+            $country = Country::find($country_id);
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            http::post($country->url.'/api/taxonomy/deselect', $data);
         }
     }
 }

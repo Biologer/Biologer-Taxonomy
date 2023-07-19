@@ -26,4 +26,7 @@ return [
     'confirm' => 'Потврди',
     'export' => 'Извези',
     'download' => 'Преузми',
+    'countries' => 'Државе',
+    'add_to_country' => 'Додај у државу',
+    'remove_from_country' => 'Деселектуј из државе',
 ];

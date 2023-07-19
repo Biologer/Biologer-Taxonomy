@@ -322,4 +322,10 @@ return [
             'field_observation_for_approval' => 'Nov nalaz za pregled',
         ],
     ],
+
+    'countries' => [
+        'selected' => 'Države u kojima je zabeležen takson.',
+        'title' => 'Odaberite državu',
+        'processing' => 'Obrada zahteva je u toku...',
+    ],
 ];
