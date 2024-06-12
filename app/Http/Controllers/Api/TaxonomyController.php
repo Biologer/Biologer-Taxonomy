@@ -342,6 +342,8 @@ class TaxonomyController
                 continue;
             }
 
+            $data['country_ref'] = [];
+
             foreach ($country->redLists()->get()->toArray() as $item) {
                 $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
             }
