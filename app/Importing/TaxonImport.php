@@ -13,6 +13,7 @@ use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -94,7 +95,7 @@ class TaxonImport extends BaseImport
             [
                 'label' => trans('labels.id'),
                 'value' => 'id',
-                'required' => false,
+                'required' => true,
             ],
             [
                 'label' => trans('labels.taxa.author'),
@@ -104,7 +105,7 @@ class TaxonImport extends BaseImport
             [
                 'label' => trans('labels.taxa.restricted'),
                 'value' => 'restricted',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'label' => trans('labels.taxa.allochthonous'),
@@ -293,6 +294,9 @@ class TaxonImport extends BaseImport
 
             $this->storeWorkingTree($tree);
             $this->saveRelations($last, $taxon);
+
+            // On end, check if new country has been added
+            $this->connectMissingCountry($last, $taxon);
         }
     }
 
@@ -476,6 +480,8 @@ class TaxonImport extends BaseImport
                 })
             );
         }
+
+        Log::info('saved');
     }
 
     /**
@@ -493,28 +499,26 @@ class TaxonImport extends BaseImport
 
     private function createSynonyms(array $item, $taxon)
     {
-        $synonyms = Arr::get($item, 'synonyms');
-        if (! $synonyms) {
+        $synonyms = Arr::get($item, 'synonyms', '');
+
+        if (empty($synonyms)) {
             return;
         }
 
         foreach (explode('; ', $synonyms) as $synonym) {
             if (str_contains($synonym, ' [')) {
-                $s = explode(' [', $synonym);
-                $author = substr($s[1], 0, strlen($s[1]) - 1);
-                $new_synonym = Synonym::firstOrCreate([
-                    'name' => $s[0],
-                    'author' => $author ?: null,
-                    'taxon_id' => $taxon->id,
-                ]);
+                [$name, $author] = explode(' [', $synonym, 2);
+                $author = rtrim($author, ']');
             } else {
-                $new_synonym = Synonym::firstOrCreate([
-                    'name' => $synonym,
-                    'author' => null,
-                    'taxon_id' => $taxon->id,
-                ]);
+                $name = $synonym;
+                $author = null;
             }
-            $new_synonym->save();
+
+            Synonym::firstOrCreate([
+                'name' => $name,
+                'author' => $author,
+                'taxon_id' => $taxon->id,
+            ]);
         }
     }
 
@@ -685,5 +689,9 @@ class TaxonImport extends BaseImport
         }
 
         return false;
+    }
+
+    private function connectMissingCountry($last, array $taxon)
+    {
     }
 }
