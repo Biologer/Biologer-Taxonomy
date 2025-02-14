@@ -733,7 +733,7 @@ class TaxonImport extends BaseImport
         Log::info('user: '.$user->pluck('first_name').' '.$user->pluck('last_name'));
         $data['taxon']['reason'] = "Updating taxon from import by ".$user->pluck('first_name').' '.$user->pluck('last_name');
 
-        foreach ($taxon->countries() as $country) {
+        foreach ($taxon->countries()->get() as $country) {
             if (! $country->active) {
                 continue;
             }
