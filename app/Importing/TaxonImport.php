@@ -726,7 +726,6 @@ class TaxonImport extends BaseImport
         $data['taxon'] = $taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries')->toArray();
         $data['taxon']['parent'] = [];
 
-
         $parent = $taxon->parent;
 
         if ($parent) {
