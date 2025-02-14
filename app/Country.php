@@ -84,17 +84,16 @@ class Country extends Model
         return static::where('code', $code)->first();
     }
 
-
-    public function setActive()
+    /**
+     * Set country as active.
+     * @param bool $active
+     * @return mixed
+     */
+    public function setActive(bool $active = true)
     {
-        $this->active = true;
+        $this->active = $active;
         $this->save();
     }
 
 
-    public function setDeactive()
-    {
-        $this->active = false;
-        $this->save();
-    }
 }

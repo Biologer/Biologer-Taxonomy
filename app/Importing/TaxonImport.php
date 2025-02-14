@@ -282,6 +282,8 @@ class TaxonImport extends BaseImport
     private function addEntireTreeOfTheTaxon(array $taxon)
     {
         if ($tree = $this->buildWorkingTree($taxon)) {
+            $changes = false;
+
             // We assume that the rest of available information describes the
             // lowest ranked taxon in the row.
             $last = end($tree);
@@ -719,52 +721,47 @@ class TaxonImport extends BaseImport
      */
     private function connectMissingCountry(Taxon $taxon, array $newCountryCodes)
     {
-
         $data['taxon'] = $taxon->toArray();
         $data['parent'] = '';
         if ($taxon->parent_id) {
             $data['parent'] = $taxon['parent'];
         }
-        $data['taxon']['reason'] = "New taxon from import";
-        $existingCountries = $taxon->countries()->get();
+
+        Log::info(request('user'));
+        $data['taxon']['reason'] = "Updating taxon from import by ";
+
         foreach ($newCountryCodes as $newCountryCode) {
             $country = Country::findByCode($newCountryCode);
             if (! $country) {
                 continue;
             }
 
-            if (! $existingCountries->contains($country)) {
-                Log::info("Country '{$country->code}' not connected.");
+            Log::info("Country '{$country->code}' not connected.");
 
-                if (! $country->active) {
-                    continue;
-                }
-
-                $data['country_ref'] = [];
-
-                foreach ($country->redLists()->get()->toArray() as $item) {
-                    $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
-                }
-                foreach ($country->conservationLegislations()->get()->toArray() as $item) {
-                    $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
-                }
-                foreach ($country->conservationDocuments()->get()->toArray() as $item) {
-                    $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
-                }
-
-                $data['key'] = config('biologer.taxonomy_key_'.$country->code);
-
-                try {
-                    // http::post($country->url . '/api/taxonomy/sync', $data);
-                    Log::info("Country '{$country->code}' synced.");
-                } catch (\Exception $e) {
-                    Log::error($e->getMessage());
-                }
-            } else {
-                Log::info("Country '{$country->code}' already connected.");
+            if (! $country->active) {
+                continue;
             }
 
+            $data['country_ref'] = [];
 
+            foreach ($country->redLists()->get()->toArray() as $item) {
+                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+            }
+
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            try {
+                http::post($country->url . '/api/taxonomy/sync', $data);
+                Log::info("Country '{$country->code}' synced.");
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
 
         }
     }
