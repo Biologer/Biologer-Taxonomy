@@ -15,6 +15,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class StoreTaxon extends FormRequest
@@ -184,7 +185,7 @@ class StoreTaxon extends FormRequest
             if (! $country->active) {
                 continue;
             }
-            
+
             $data['country_ref'] = [];
 
             foreach ($country->redLists()->get()->toArray() as $item) {
@@ -199,7 +200,12 @@ class StoreTaxon extends FormRequest
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url.'/api/taxonomy/sync', $data);
+            try {
+                http::post($country->url.'/api/taxonomy/sync', $data);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
+
         }
     }
 }

@@ -13,6 +13,7 @@ use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -296,7 +297,7 @@ class TaxonImport extends BaseImport
             $this->saveRelations($last, $taxon);
 
             // Check if new country has been added, and sync them.
-            $this->connectMissingCountry($last, $taxon);
+            $this->connectMissingCountry($last, $this->getCountries($taxon));
 
             Log::info('saved');
         }
@@ -712,24 +713,50 @@ class TaxonImport extends BaseImport
      * Connect the lowest taxon in the row with some of its relations.
      *
      * @param Taxon $taxon
-     * @param array $data
+     * @param array $countryCodes
      * @return void
      */
-    private function connectMissingCountry($taxon, array $data)
+    private function connectMissingCountry(Taxon $taxon, array $countryCodes)
     {
-        $countryCodes = $this->getCountries($data);
+        $data['taxon'] = $taxon->toArray();
+        $data['parent'] = '';
+        if ($taxon->parent_id) {
+            $data['parent'] = $taxon['parent'];
+        }
+        $data['taxon']['reason'] = "New taxon from import";
 
-        $currentCountries = $taxon->countries()->get();
-        foreach ($currentCountries as $country) {
+        foreach ($taxon->countries()->get() as $country) {
             if (! in_array($country->code, $countryCodes)) {
+
                 Log::info("Country '{$country->code}' not connected.");
+
+                if (! $country->active) {
+                    continue;
+                }
+
+                $data['country_ref'] = [];
+
+                foreach ($country->redLists()->get()->toArray() as $item) {
+                    $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+                }
+                foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+                    $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+                }
+                foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+                    $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+                }
+
+                $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+                try {
+                    // http::post($country->url . '/api/taxonomy/sync', $data);
+                    Log::info("Country '{$country->code}' synced.");
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage());
+                }
+
             } else {
                 Log::info("Country '{$country->code}' already connected.");
-            }
-            $data['key'] = config('biologer.taxonomy_key_' . $country->code);
-
-            if (!$country->active) {
-                continue;
             }
         }
     }
