@@ -726,14 +726,14 @@ class TaxonImport extends BaseImport
         $data['taxon'] = $taxon->toArray();
         $data['taxon']['parent'] = [];
         if ($taxon->parent_id) {
-            Log::info('Info: ', $taxon->parent()->get()->toArray());
-            $data['parent']['name'] = $taxon['parent']['name'];
-            $data['parent']['rank'] = $taxon['parent']['rank'];
+            $parent = $taxon->parent()->get()->toArray();
+            $data['parent']['name'] = $parent['name'];
+            $data['parent']['rank'] = $parent['rank'];
         }
 
         $user = $this->import->user();
-        Log::info('user: '.$user->pluck('first_name').' '.$user->pluck('last_name'));
-        $data['taxon']['reason'] = "Updating taxon from import by ".$user->pluck('first_name').' '.$user->pluck('last_name');
+        Log::info('user: ' . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' '));
+        $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
             if (! $country->active) {
