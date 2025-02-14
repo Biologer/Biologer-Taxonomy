@@ -749,7 +749,7 @@ class TaxonImport extends BaseImport
                 $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
                 try {
-                    // http::post($country->url . '/api/taxonomy/sync', $data);
+                    http::post($country->url . '/api/taxonomy/sync', $data);
                     Log::info("Country '{$country->code}' synced.");
                 } catch (\Exception $e) {
                     Log::error($e->getMessage());
