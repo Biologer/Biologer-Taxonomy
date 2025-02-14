@@ -300,7 +300,7 @@ class TaxonImport extends BaseImport
             $this->saveRelations($last, $taxon);
 
             // Check if new country has been added, and sync them.
-            $this->connectMissingCountry($last, $this->getCountries($taxon));
+            $this->connectMissingCountry($last);
 
             Log::info('saved');
         }
@@ -477,6 +477,8 @@ class TaxonImport extends BaseImport
         $taxon->conservationLegislations()->sync($this->getConservationLegislations($data), []);
         $taxon->conservationDocuments()->sync($this->getConservationDocuments($data), []);
         $taxon->stages()->sync($this->getStages($data), []);
+
+        $taxon->countries()->syncWithoutDetaching($this->getCountries($data), []);
 
         $redListData = $this->getRedLists($data);
         if ($redListData != null) {
@@ -701,15 +703,15 @@ class TaxonImport extends BaseImport
     private function getCountries(array $data): array
     {
         $countries = strtolower(Arr::get($data, 'countries', ''));
-        $country_codes = [];
+        $country_ids = [];
         if (empty($countries)) {
-            return $country_codes;
+            return $country_ids;
         }
         foreach (explode('; ', $countries) as $country) {
-            $country_codes[] = $country;
+            $country_ids[] = Country::findByCode($country)->id;
         }
 
-        return $country_codes;
+        return $country_ids;
     }
 
     /**
@@ -719,7 +721,7 @@ class TaxonImport extends BaseImport
      * @param array $countryCodes
      * @return void
      */
-    private function connectMissingCountry(Taxon $taxon, array $newCountryCodes)
+    private function connectMissingCountry(Taxon $taxon)
     {
         $data['taxon'] = $taxon->toArray();
         $data['parent'] = '';
@@ -727,17 +729,11 @@ class TaxonImport extends BaseImport
             $data['parent'] = $taxon['parent'];
         }
 
-        Log::info('user: '.get_current_user());
-        $data['taxon']['reason'] = "Updating taxon from import by ";
+        $user = $this->import->user();
+        Log::info('user: '.$user->pluck('first_name').' '.$user->pluck('last_name'));
+        $data['taxon']['reason'] = "Updating taxon from import by ".$user->pluck('first_name').' '.$user->pluck('last_name');
 
-        foreach ($newCountryCodes as $newCountryCode) {
-            $country = Country::findByCode($newCountryCode);
-            if (! $country) {
-                continue;
-            }
-
-            Log::info("Country '{$country->code}' not connected.");
-
+        foreach ($taxon->countries() as $country) {
             if (! $country->active) {
                 continue;
             }
