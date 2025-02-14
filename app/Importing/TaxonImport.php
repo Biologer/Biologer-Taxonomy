@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -301,8 +300,6 @@ class TaxonImport extends BaseImport
 
             // Check if new country has been added, and sync them.
             $this->connectMissingCountry($last);
-
-            Log::info('saved');
         }
     }
 
@@ -589,7 +586,7 @@ class TaxonImport extends BaseImport
         $legislations = strtolower(Arr::get($data, 'conservation_legislations', ''));
         $legislation_ids = [];
         if (empty($legislations)) {
-            return;
+            return $legislation_ids;
         }
         foreach (explode('; ', $legislations) as $legislation) {
             $leg = $this->conservationLegislations->first(function ($leg) use ($legislation) {
@@ -606,7 +603,7 @@ class TaxonImport extends BaseImport
         $documents = strtolower(Arr::get($data, 'conservation_documents', ''));
         $document_ids = [];
         if (empty($documents)) {
-            return;
+            return $document_ids;
         }
         foreach (explode('; ', $documents) as $document) {
             $doc = $this->conservationDocuments->first(function ($doc) use ($document) {
@@ -623,7 +620,7 @@ class TaxonImport extends BaseImport
         $stages = strtolower(Arr::get($data, 'stages', ''));
         $stage_ids = [];
         if (empty($stages)) {
-            return;
+            return $stage_ids;
         }
         foreach (explode('; ', $stages) as $translation) {
             $stage = $this->countries->first(function ($stage) use ($translation) {
@@ -754,12 +751,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            try {
-                http::post($country->url . '/api/taxonomy/sync', $data);
-                Log::info("Country '{$country->code}' synced.");
-            } catch (\Exception $e) {
-                Log::error($e->getMessage());
-            }
+            http::post($country->url . '/api/taxonomy/sync', $data);
 
         }
     }
