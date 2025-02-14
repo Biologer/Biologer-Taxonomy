@@ -277,7 +277,7 @@ class TaxonomyController
         }
     }
 
-    public function addToCountry(Request $request)
+    public function addToCountry()
     {
         $taxa = Taxon::with([
             'conservationLegislations', 'redLists', 'conservationDocuments',
@@ -295,7 +295,7 @@ class TaxonomyController
         }
     }
 
-    public function removeFromCountry(Request $request)
+    public function removeFromCountry()
     {
         $taxa = Taxon::with([
             'conservationLegislations', 'redLists', 'conservationDocuments',
@@ -328,10 +328,15 @@ class TaxonomyController
     public function sendUpdatesToLocalDatabases(Taxon $taxon, $oldCountries, $reason, $country_id = null)
     {
         $data['taxon'] = $taxon->toArray();
-        $data['parent'] = '';
-        if ($taxon->parent_id) {
-            $data['parent'] = $taxon['parent'];
+        $data['parent'] = [];
+
+        $parent = $taxon->parent;
+
+        if ($parent) {
+            $data['parent']['name'] = $parent->name;
+            $data['parent']['rank'] = $parent->rank;
         }
+
         $data['taxon']['reason'] = $reason;
         $countries = $taxon->countries()->get();
 

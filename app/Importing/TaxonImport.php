@@ -4,6 +4,7 @@ namespace App\Importing;
 
 use App\ConservationDocument;
 use App\ConservationLegislation;
+use App\Country;
 use App\Import;
 use App\RedList;
 use App\Stage;
@@ -13,6 +14,7 @@ use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -46,7 +48,7 @@ class TaxonImport extends BaseImport
      *
      * @var EloquentCollection
      */
-    private $stages;
+    private $countries;
 
     /**
      * Create new importer instance.
@@ -70,7 +72,7 @@ class TaxonImport extends BaseImport
         $this->conservationDocuments = ConservationDocument::all();
         $this->conservationLegislations = ConservationLegislation::all();
         $this->redLists = RedList::all();
-        $this->stages = Stage::all();
+        $this->countries = Stage::all();
         $this->replace = $this->getBoolean($this->import->options->toArray(), 'replace');
     }
 
@@ -94,7 +96,7 @@ class TaxonImport extends BaseImport
             [
                 'label' => trans('labels.id'),
                 'value' => 'id',
-                'required' => false,
+                'required' => true,
             ],
             [
                 'label' => trans('labels.taxa.author'),
@@ -104,7 +106,7 @@ class TaxonImport extends BaseImport
             [
                 'label' => trans('labels.taxa.restricted'),
                 'value' => 'restricted',
-                'required' => true,
+                'required' => false,
             ],
             [
                 'label' => trans('labels.taxa.allochthonous'),
@@ -279,6 +281,8 @@ class TaxonImport extends BaseImport
     private function addEntireTreeOfTheTaxon(array $taxon)
     {
         if ($tree = $this->buildWorkingTree($taxon)) {
+            $changes = false;
+
             // We assume that the rest of available information describes the
             // lowest ranked taxon in the row.
             $last = end($tree);
@@ -293,6 +297,9 @@ class TaxonImport extends BaseImport
 
             $this->storeWorkingTree($tree);
             $this->saveRelations($last, $taxon);
+
+            // Check if new country has been added, and sync them.
+            $this->connectMissingCountry($last);
         }
     }
 
@@ -468,6 +475,8 @@ class TaxonImport extends BaseImport
         $taxon->conservationDocuments()->sync($this->getConservationDocuments($data), []);
         $taxon->stages()->sync($this->getStages($data), []);
 
+        $taxon->countries()->syncWithoutDetaching($this->getCountries($data), []);
+
         $redListData = $this->getRedLists($data);
         if ($redListData != null) {
             $taxon->redLists()->sync(
@@ -493,28 +502,26 @@ class TaxonImport extends BaseImport
 
     private function createSynonyms(array $item, $taxon)
     {
-        $synonyms = Arr::get($item, 'synonyms');
-        if (! $synonyms) {
+        $synonyms = Arr::get($item, 'synonyms', '');
+
+        if (empty($synonyms)) {
             return;
         }
 
         foreach (explode('; ', $synonyms) as $synonym) {
             if (str_contains($synonym, ' [')) {
-                $s = explode(' [', $synonym);
-                $author = substr($s[1], 0, strlen($s[1]) - 1);
-                $new_synonym = Synonym::firstOrCreate([
-                    'name' => $s[0],
-                    'author' => $author ?: null,
-                    'taxon_id' => $taxon->id,
-                ]);
+                [$name, $author] = explode(' [', $synonym, 2);
+                $author = rtrim($author, ']');
             } else {
-                $new_synonym = Synonym::firstOrCreate([
-                    'name' => $synonym,
-                    'author' => null,
-                    'taxon_id' => $taxon->id,
-                ]);
+                $name = $synonym;
+                $author = null;
             }
-            $new_synonym->save();
+
+            Synonym::firstOrCreate([
+                'name' => $name,
+                'author' => $author,
+                'taxon_id' => $taxon->id,
+            ]);
         }
     }
 
@@ -576,10 +583,10 @@ class TaxonImport extends BaseImport
      */
     private function getConservationLegislations(array $data)
     {
-        $legislations = strtolower(Arr::get($data, 'conservation_legislations'));
+        $legislations = strtolower(Arr::get($data, 'conservation_legislations', ''));
         $legislation_ids = [];
-        if (! $legislations) {
-            return;
+        if (empty($legislations)) {
+            return $legislation_ids;
         }
         foreach (explode('; ', $legislations) as $legislation) {
             $leg = $this->conservationLegislations->first(function ($leg) use ($legislation) {
@@ -593,10 +600,10 @@ class TaxonImport extends BaseImport
 
     private function getConservationDocuments(array $data)
     {
-        $documents = strtolower(Arr::get($data, 'conservation_documents'));
+        $documents = strtolower(Arr::get($data, 'conservation_documents', ''));
         $document_ids = [];
-        if (! $documents) {
-            return;
+        if (empty($documents)) {
+            return $document_ids;
         }
         foreach (explode('; ', $documents) as $document) {
             $doc = $this->conservationDocuments->first(function ($doc) use ($document) {
@@ -610,13 +617,13 @@ class TaxonImport extends BaseImport
 
     private function getStages(array $data)
     {
-        $stages = strtolower(Arr::get($data, 'stages'));
+        $stages = strtolower(Arr::get($data, 'stages', ''));
         $stage_ids = [];
-        if (! $stages) {
-            return;
+        if (empty($stages)) {
+            return $stage_ids;
         }
         foreach (explode('; ', $stages) as $translation) {
-            $stage = $this->stages->first(function ($stage) use ($translation) {
+            $stage = $this->countries->first(function ($stage) use ($translation) {
                 return strtolower($stage->name_translation) == $translation;
             });
             $stage_ids[] = $stage ? $stage->id : null;
@@ -627,25 +634,28 @@ class TaxonImport extends BaseImport
 
     private function getRedLists(array $data)
     {
-        $red_lists = Arr::get($data, 'red_lists');
-        $collection = collect();
-        if (! $red_lists) {
-            return;
-        }
-        foreach (explode('; ', $red_lists) as $red_list) {
-            $x = explode(' [', $red_list);
-            $region = strtolower($x[0]);
-            $category = substr($x[1], 0, strlen($x[1]) - 1);
+        $redLists = Arr::get($data, 'red_lists', '');
 
-            $red_list = $this->redLists->first(function ($rl) use ($region) {
-                return strtolower($rl->getNameAttribute()) == $region;
-            });
-            if ($red_list) {
-                $collection->push(['id' => $red_list->id, 'category' => $category]);
-            }
+        if (empty($redLists)) {
+            return collect();
         }
 
-        return $collection;
+        return collect(explode('; ', $redLists))
+            ->map(function ($redList) {
+                $redListData = explode(' [', $redList, 2);
+                if (count($redListData) < 2) {
+                    return null;
+                }
+
+                $region = strtolower($redListData[0]);
+                $category = rtrim($redListData[1], ']');
+
+                $redList = $this->redLists->first(fn($rl) => strtolower($rl->getNameAttribute()) === $region);
+
+                return $redList ? ['id' => $redList->id, 'category' => $category] : null;
+            })
+            ->filter()
+            ->values();
     }
 
     private function extractNonExistingData(Taxon $last, array $input): array
@@ -685,5 +695,64 @@ class TaxonImport extends BaseImport
         }
 
         return false;
+    }
+
+    private function getCountries(array $data): array
+    {
+        $countries = strtolower(Arr::get($data, 'countries', ''));
+        $country_ids = [];
+        if (empty($countries)) {
+            return $country_ids;
+        }
+        foreach (explode('; ', $countries) as $country) {
+            $country_ids[] = Country::findByCode($country)->id;
+        }
+
+        return $country_ids;
+    }
+
+    /**
+     * Connect the lowest taxon in the row with some of its relations.
+     *
+     * @param Taxon $taxon
+     * @return void
+     */
+    private function connectMissingCountry(Taxon $taxon)
+    {
+        $data['taxon'] = $taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries')->toArray();
+        $data['parent'] = [];
+
+        $parent = $taxon->parent;
+
+        if ($parent) {
+            $data['parent']['name'] = $parent->name;
+            $data['parent']['rank'] = $parent->rank;
+        }
+
+        $user = $this->import->user();
+        $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
+
+        foreach ($taxon->countries()->get() as $country) {
+            if (! $country->active) {
+                continue;
+            }
+
+            $data['country_ref'] = [];
+
+            foreach ($country->redLists()->get()->toArray() as $item) {
+                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+            }
+            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+            }
+
+            $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            http::post($country->url . '/api/taxonomy/sync', $data);
+
+        }
     }
 }

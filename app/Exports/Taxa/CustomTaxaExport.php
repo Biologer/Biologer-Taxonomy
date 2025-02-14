@@ -114,7 +114,7 @@ class CustomTaxaExport extends BaseExport
 
     /**
      * Extract needed data from item.
-     * All separators must be semicolon with space afterwards ('; ').
+     * All separators must be semicolon with space afterward ('; ').
      *
      * @param  \App\Taxon  $item
      * @return array
@@ -134,7 +134,7 @@ class CustomTaxaExport extends BaseExport
             'stages' => $item->stages->map->name_translation->implode('; '),
             'conservation_legislations' => $item->conservationLegislations->map->name->implode('; '),
             'conservation_documents' => $item->conservationDocuments->map->name->implode('; '),
-            'countries' => $item->countries->map->name->implode('; '),
+            'countries' => $item->countries->map->code->implode('; '),
             'red_lists' => $item->redLists->map(function ($redList) {
                 return "{$redList->name} [{$redList->pivot->category}]";
             })->implode('; '),
