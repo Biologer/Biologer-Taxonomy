@@ -47,7 +47,7 @@ class TaxonImport extends BaseImport
      *
      * @var EloquentCollection
      */
-    private $stages;
+    private $countries;
 
     /**
      * Create new importer instance.
@@ -71,7 +71,7 @@ class TaxonImport extends BaseImport
         $this->conservationDocuments = ConservationDocument::all();
         $this->conservationLegislations = ConservationLegislation::all();
         $this->redLists = RedList::all();
-        $this->stages = Stage::all();
+        $this->countries = Stage::all();
         $this->replace = $this->getBoolean($this->import->options->toArray(), 'replace');
     }
 
@@ -295,8 +295,10 @@ class TaxonImport extends BaseImport
             $this->storeWorkingTree($tree);
             $this->saveRelations($last, $taxon);
 
-            // On end, check if new country has been added
+            // Check if new country has been added, and sync them.
             $this->connectMissingCountry($last, $taxon);
+
+            Log::info('saved');
         }
     }
 
@@ -480,8 +482,6 @@ class TaxonImport extends BaseImport
                 })
             );
         }
-
-        Log::info('saved');
     }
 
     /**
@@ -580,9 +580,9 @@ class TaxonImport extends BaseImport
      */
     private function getConservationLegislations(array $data)
     {
-        $legislations = strtolower(Arr::get($data, 'conservation_legislations'));
+        $legislations = strtolower(Arr::get($data, 'conservation_legislations', ''));
         $legislation_ids = [];
-        if (! $legislations) {
+        if (empty($legislations)) {
             return;
         }
         foreach (explode('; ', $legislations) as $legislation) {
@@ -597,9 +597,9 @@ class TaxonImport extends BaseImport
 
     private function getConservationDocuments(array $data)
     {
-        $documents = strtolower(Arr::get($data, 'conservation_documents'));
+        $documents = strtolower(Arr::get($data, 'conservation_documents', ''));
         $document_ids = [];
-        if (! $documents) {
+        if (empty($documents)) {
             return;
         }
         foreach (explode('; ', $documents) as $document) {
@@ -614,13 +614,13 @@ class TaxonImport extends BaseImport
 
     private function getStages(array $data)
     {
-        $stages = strtolower(Arr::get($data, 'stages'));
+        $stages = strtolower(Arr::get($data, 'stages', ''));
         $stage_ids = [];
-        if (! $stages) {
+        if (empty($stages)) {
             return;
         }
         foreach (explode('; ', $stages) as $translation) {
-            $stage = $this->stages->first(function ($stage) use ($translation) {
+            $stage = $this->countries->first(function ($stage) use ($translation) {
                 return strtolower($stage->name_translation) == $translation;
             });
             $stage_ids[] = $stage ? $stage->id : null;
@@ -631,25 +631,28 @@ class TaxonImport extends BaseImport
 
     private function getRedLists(array $data)
     {
-        $red_lists = Arr::get($data, 'red_lists');
-        $collection = collect();
-        if (! $red_lists) {
-            return;
-        }
-        foreach (explode('; ', $red_lists) as $red_list) {
-            $x = explode(' [', $red_list);
-            $region = strtolower($x[0]);
-            $category = substr($x[1], 0, strlen($x[1]) - 1);
+        $redLists = Arr::get($data, 'red_lists', '');
 
-            $red_list = $this->redLists->first(function ($rl) use ($region) {
-                return strtolower($rl->getNameAttribute()) == $region;
-            });
-            if ($red_list) {
-                $collection->push(['id' => $red_list->id, 'category' => $category]);
-            }
+        if (empty($redLists)) {
+            return collect();
         }
 
-        return $collection;
+        return collect(explode('; ', $redLists))
+            ->map(function ($redList) {
+                $redListData = explode(' [', $redList, 2);
+                if (count($redListData) < 2) {
+                    return null;
+                }
+
+                $region = strtolower($redListData[0]);
+                $category = rtrim($redListData[1], ']');
+
+                $redList = $this->redLists->first(fn($rl) => strtolower($rl->getNameAttribute()) === $region);
+
+                return $redList ? ['id' => $redList->id, 'category' => $category] : null;
+            })
+            ->filter()
+            ->values();
     }
 
     private function extractNonExistingData(Taxon $last, array $input): array
@@ -691,7 +694,39 @@ class TaxonImport extends BaseImport
         return false;
     }
 
-    private function connectMissingCountry($last, array $taxon)
+    private function getCountries(array $data): array
     {
+        $countries = strtolower(Arr::get($data, 'countries', ''));
+        $country_codes = [];
+        if (empty($countries)) {
+            return $country_codes;
+        }
+        foreach (explode('; ', $countries) as $country) {
+            $country_codes[] = $country;
+        }
+
+        return $country_codes;
+    }
+
+    /**
+     * Connect the lowest taxon in the row with some of its relations.
+     *
+     * @param Taxon $taxon
+     * @param array $data
+     * @return void
+     */
+    private function connectMissingCountry($taxon, array $data)
+    {
+        $currentCountries = $taxon->countries()->get();
+        foreach ($currentCountries as $country) {
+            $data['key'] = config('biologer.taxonomy_key_' . $country->code);
+
+            if (!$country->active) {
+                continue;
+            }
+        }
+
+        $log = $this->getCountries($data);
+        Log::info('Country codes:', $log);
     }
 }
