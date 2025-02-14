@@ -721,10 +721,10 @@ class TaxonImport extends BaseImport
 
         $currentCountries = $taxon->countries()->get();
         foreach ($currentCountries as $country) {
-            if (in_array($country->code, $countryCodes)) {
-                Log::info("Country '{$country->code}' already connected.");
-            } else {
+            if (! in_array($country->code, $countryCodes)) {
                 Log::info("Country '{$country->code}' not connected.");
+            } else {
+                Log::info("Country '{$country->code}' already connected.");
             }
             $data['key'] = config('biologer.taxonomy_key_' . $country->code);
 
