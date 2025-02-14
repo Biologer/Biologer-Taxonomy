@@ -725,12 +725,16 @@ class TaxonImport extends BaseImport
     {
         $data['taxon'] = $taxon->toArray();
         $data['taxon']['parent'] = [];
-        if ($taxon->parent_id) {
-            $parent = $taxon->parent()->get()->toArray();
-            $data['parent']['name'] = $parent['name'];
-            $data['parent']['rank'] = $parent['rank'];
+
+
+        $parent = $taxon->parent;
+
+        if ($parent) {
+            $data['parent']['name'] = $parent->name;
+            $data['parent']['rank'] = $parent->rank;
         }
 
+        Log::info('Parrent: ' . $parent);
         $user = $this->import->user();
         Log::info('user: ' . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' '));
         $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
