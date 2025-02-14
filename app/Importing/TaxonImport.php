@@ -726,8 +726,8 @@ class TaxonImport extends BaseImport
         $data['taxon'] = $taxon->toArray();
         $data['parent'] = '';
         if ($taxon->parent_id) {
-            $data['parent']['name'] = $taxon['parent']['name'];
-            $data['parent']['rank'] = $taxon['parent']['rank'];
+            $data['parent']['name'] = $taxon->parent()->pluck('name')->first();
+            $data['parent']['rank'] = $taxon->parent()->pluck('rank')->first();
         }
 
         $user = $this->import->user();
