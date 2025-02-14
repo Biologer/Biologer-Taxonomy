@@ -726,6 +726,7 @@ class TaxonImport extends BaseImport
         $data['taxon'] = $taxon->toArray();
         $data['taxon']['parent'] = [];
         if ($taxon->parent_id) {
+            Log::info('Info: ', $taxon->parent()->get()->toArray());
             $data['parent']['name'] = $taxon['parent']['name'];
             $data['parent']['rank'] = $taxon['parent']['rank'];
         }
@@ -754,7 +755,7 @@ class TaxonImport extends BaseImport
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             try {
-                http::post($country->url . '/api/taxonomy/sync', $data);
+                //http::post($country->url . '/api/taxonomy/sync', $data);
                 Log::info("Country '{$country->code}' synced.");
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
