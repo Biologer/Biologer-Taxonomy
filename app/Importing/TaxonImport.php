@@ -724,10 +724,10 @@ class TaxonImport extends BaseImport
     private function connectMissingCountry(Taxon $taxon)
     {
         $data['taxon'] = $taxon->toArray();
-        $data['parent'] = '';
+        $data['parent'] = [];
         if ($taxon->parent_id) {
-            $data['parent']['name'] = $taxon->parent()->pluck('name')->first();
-            $data['parent']['rank'] = $taxon->parent()->pluck('rank')->first();
+            $data['parent']['name'] = $taxon['parent']['name'];
+            $data['parent']['rank'] = $taxon['parent']['rank'];
         }
 
         $user = $this->import->user();
