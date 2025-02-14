@@ -755,6 +755,9 @@ class TaxonImport extends BaseImport
             foreach ($country->conservationDocuments()->get()->toArray() as $item) {
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
+            foreach ($country->stages()->get()->toArray() as $item) {
+                $data['country_ref']['stages'][$item['pivot']['stage_id']] = $item['pivot']['ref_id'];
+            }
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
