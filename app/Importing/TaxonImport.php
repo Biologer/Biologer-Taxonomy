@@ -717,16 +717,20 @@ class TaxonImport extends BaseImport
      */
     private function connectMissingCountry($taxon, array $data)
     {
+        $countryCodes = $this->getCountries($data);
+
         $currentCountries = $taxon->countries()->get();
         foreach ($currentCountries as $country) {
+            if (in_array($country->code, $countryCodes)) {
+                Log::info("Country '{$country->code}' already connected.");
+            } else {
+                Log::info("Country '{$country->code}' not connected.");
+            }
             $data['key'] = config('biologer.taxonomy_key_' . $country->code);
 
             if (!$country->active) {
                 continue;
             }
         }
-
-        $log = $this->getCountries($data);
-        Log::info('Country codes:', $log);
     }
 }
