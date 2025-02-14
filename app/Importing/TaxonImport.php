@@ -734,9 +734,9 @@ class TaxonImport extends BaseImport
             $data['parent']['rank'] = $parent->rank;
         }
 
-        Log::info('Parrent: ' . $parent);
+        // Log::info('Parrent: ' . $parent);
         $user = $this->import->user();
-        Log::info('user: ' . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' '));
+        // Log::info('user: ' . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' '));
         $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
@@ -759,7 +759,7 @@ class TaxonImport extends BaseImport
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             try {
-                //http::post($country->url . '/api/taxonomy/sync', $data);
+                http::post($country->url . '/api/taxonomy/sync', $data);
                 Log::info("Country '{$country->code}' synced.");
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
