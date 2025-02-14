@@ -175,10 +175,15 @@ class StoreTaxon extends FormRequest
     private function sendNewTaxonToLocalDatabases($taxon)
     {
         $data['taxon'] = $taxon->toArray();
-        $data['parent'] = '';
-        if ($taxon->parent_id) {
-            $data['parent'] = $taxon['parent'];
+        $data['parent'] = [];
+
+        $parent = $taxon->parent;
+
+        if ($parent) {
+            $data['parent']['name'] = $parent->name;
+            $data['parent']['rank'] = $parent->rank;
         }
+
         $data['taxon']['reason'] = $this->input('reason');
 
         foreach ($taxon->countries()->get() as $country) {

@@ -718,13 +718,12 @@ class TaxonImport extends BaseImport
      * Connect the lowest taxon in the row with some of its relations.
      *
      * @param Taxon $taxon
-     * @param array $countryCodes
      * @return void
      */
     private function connectMissingCountry(Taxon $taxon)
     {
         $data['taxon'] = $taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries')->toArray();
-        $data['taxon']['parent'] = [];
+        $data['parent'] = [];
 
         $parent = $taxon->parent;
 
@@ -733,9 +732,7 @@ class TaxonImport extends BaseImport
             $data['parent']['rank'] = $parent->rank;
         }
 
-        // Log::info('Parrent: ' . $parent);
         $user = $this->import->user();
-        // Log::info('user: ' . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' '));
         $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
