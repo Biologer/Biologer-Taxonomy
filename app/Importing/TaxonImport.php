@@ -727,7 +727,7 @@ class TaxonImport extends BaseImport
             $data['parent'] = $taxon['parent'];
         }
 
-        Log::info(request('user'));
+        Log::info('user: '.get_current_user());
         $data['taxon']['reason'] = "Updating taxon from import by ";
 
         foreach ($newCountryCodes as $newCountryCode) {
