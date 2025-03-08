@@ -722,17 +722,17 @@ class TaxonImport extends BaseImport
     private function connectMissingCountry(Taxon $taxon)
     {
         $data['taxon'] = $taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries')->toArray();
-        $data['parent'] = [];
+        $data['taxon']['parent'] = [];
 
         $parent = $taxon->parent;
 
         if ($parent) {
-            $data['parent']['name'] = $parent->name;
-            $data['parent']['rank'] = $parent->rank;
+            $data['taxon']['parent']['name'] = $parent->name;
+            $data['taxon']['parent']['rank'] = $parent->rank;
         }
 
         $user = $this->import->user();
-        $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
+        $data['taxon']['reason'] = "Updating taxon from import by user: " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
             if (! $country->active) {
@@ -753,7 +753,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            Log::info('Taxon parent: ' . $data['parent']['name']);
+            Log::info('Taxon parent: ' . $data['taxon']['parent']['name']);
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
             // http::retry(3, 100)->post($country->url . '/api/taxonomy/sync', $data);
 
