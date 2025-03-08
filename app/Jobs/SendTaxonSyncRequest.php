@@ -14,8 +14,8 @@ class SendTaxonSyncRequest implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 20; // Number of retry attempts
-    public array $backoff = [3, 5, 10, 20]; // Retry delays in seconds
+    public int $tries = 5;
+    public array $backoff = [3, 5, 10, 20, 30];
 
     protected $url;
     protected $path;
@@ -37,21 +37,27 @@ class SendTaxonSyncRequest implements ShouldQueue
     public function handle()
     {
         try {
-            $response = Http::retry(5, 1000, function ($exception) {
+            $response = Http::retry($this->tries, 2000, function ($exception) {
                 return $exception->getCode() === 429;
             })->post($this->url . $this->path, $this->data);
 
             if ($response->failed()) {
+                $attempt = $this->attempts();
+                $delay = $this->backoff[$attempt - 1] ?? end($this->backoff);
                 Log::error("Failed to sync taxon: {$this->url}{$this->path}", [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
-                $this->fail();
+                $this->release($delay);
             } else {
                 Log::info("Taxon sync successful for: {$this->url}{$this->path}");
             }
         } catch (\Exception $e) {
-            Log::error("Error in taxon sync: " . $e->getMessage());
+            Log::error("Error in taxon sync: " . $e->getMessage(), [
+                'url' => $this->url . $this->path,
+                'data' => $this->data,
+            ]);
+            $this->fail($e);
         }
     }
 }
