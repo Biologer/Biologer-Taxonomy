@@ -15,7 +15,7 @@ class SendTaxonSyncRequest implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 20; // Number of retry attempts
-    public array $backoff = [1, 5, 10, 20]; // Retry delays in seconds
+    public array $backoff = [3, 5, 10, 20]; // Retry delays in seconds
 
     protected $url;
     protected $path;
