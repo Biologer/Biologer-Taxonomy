@@ -727,6 +727,7 @@ class TaxonImport extends BaseImport
         if ($parent) {
             $data['taxon']['parent']['name'] = $parent->name;
             $data['taxon']['parent']['rank'] = $parent->rank;
+            $data['taxon']['parent']['ancestors_names'] = $parent->ancestors_names;
         }
 
         $user = $this->import->user();

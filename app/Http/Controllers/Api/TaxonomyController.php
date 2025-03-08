@@ -336,6 +336,7 @@ class TaxonomyController
         if ($parent) {
             $data['parent']['name'] = $parent->name;
             $data['parent']['rank'] = $parent->rank;
+            $data['parent']['ancestors_names'] = $parent->ancestors_names;
         }
 
         $data['taxon']['reason'] = $reason;
