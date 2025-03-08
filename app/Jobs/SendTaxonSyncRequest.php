@@ -37,7 +37,7 @@ class SendTaxonSyncRequest implements ShouldQueue
     public function handle()
     {
         try {
-            $response = Http::retry(5, 200, function ($exception) {
+            $response = Http::retry(5, 1000, function ($exception) {
                 return $exception->getCode() === 429;
             })->post($this->url . $this->path, $this->data);
 

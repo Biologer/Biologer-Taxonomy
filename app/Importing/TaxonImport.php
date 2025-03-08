@@ -752,7 +752,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
+            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data))->delay(now()->addSeconds(5));
 
         }
     }
