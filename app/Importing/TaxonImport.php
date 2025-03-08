@@ -6,6 +6,7 @@ use App\ConservationDocument;
 use App\ConservationLegislation;
 use App\Country;
 use App\Import;
+use App\Jobs\SendTaxonSyncRequest;
 use App\RedList;
 use App\Stage;
 use App\Support\Localization;
@@ -751,7 +752,8 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::retry(3, 100)->post($country->url . '/api/taxonomy/sync', $data);
+            dispatch(new SendTaxonSyncRequest($country->url, $data));
+            // http::retry(3, 100)->post($country->url . '/api/taxonomy/sync', $data);
 
         }
     }
