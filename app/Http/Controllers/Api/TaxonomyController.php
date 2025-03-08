@@ -15,7 +15,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Http;
 
 class TaxonomyController
 {
@@ -361,7 +360,6 @@ class TaxonomyController
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
 
-            //http::post($country->url.'/api/taxonomy/sync', $data);
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
 
@@ -370,7 +368,6 @@ class TaxonomyController
             if (! $countries->contains($country)) {
                 $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-                // http::post($country->url.'/api/taxonomy/deselect', $data);
                 dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/deselect', $data));
             }
         }
@@ -379,7 +376,6 @@ class TaxonomyController
             $country = Country::find($country_id);
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            // http::post($country->url.'/api/taxonomy/deselect', $data);
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/deselect', $data));
         }
     }

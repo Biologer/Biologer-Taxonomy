@@ -15,8 +15,6 @@ use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -753,9 +751,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            Log::info('Taxon parent: ' . $data['taxon']['parent']['name']);
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
-            // http::retry(3, 100)->post($country->url . '/api/taxonomy/sync', $data);
 
         }
     }
