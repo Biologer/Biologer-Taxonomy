@@ -752,8 +752,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url . '/api/taxonomy/sync', $data);
-            Log::info('Taxon ID: '.$data['taxon']['id'].' updated.');
+            http::retry(3, 100)->post($country->url . '/api/taxonomy/sync', $data);
 
         }
     }
