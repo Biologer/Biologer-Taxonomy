@@ -6,6 +6,7 @@ use App\ConservationDocument;
 use App\ConservationLegislation;
 use App\Country;
 use App\Http\Resources\TaxonResource;
+use App\Jobs\SendTaxonSyncRequest;
 use App\RedList;
 use App\Support\Taxonomy;
 use App\Taxon;
@@ -14,7 +15,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Http;
 
 class TaxonomyController
 {
@@ -273,7 +273,8 @@ class TaxonomyController
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url.'/api/taxonomy/remove', $data);
+            // http::post($country->url.'/api/taxonomy/remove', $data);
+            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/remove', $data));
         }
     }
 
@@ -335,6 +336,7 @@ class TaxonomyController
         if ($parent) {
             $data['parent']['name'] = $parent->name;
             $data['parent']['rank'] = $parent->rank;
+            $data['parent']['ancestors_names'] = $parent->ancestors_names;
         }
 
         $data['taxon']['reason'] = $reason;
@@ -359,7 +361,7 @@ class TaxonomyController
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
 
-            http::post($country->url.'/api/taxonomy/sync', $data);
+            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
 
         foreach ($oldCountries as $country) {
@@ -367,7 +369,7 @@ class TaxonomyController
             if (! $countries->contains($country)) {
                 $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-                http::post($country->url.'/api/taxonomy/deselect', $data);
+                dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/deselect', $data));
             }
         }
 
@@ -375,7 +377,7 @@ class TaxonomyController
             $country = Country::find($country_id);
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url.'/api/taxonomy/deselect', $data);
+            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/deselect', $data));
         }
     }
 }

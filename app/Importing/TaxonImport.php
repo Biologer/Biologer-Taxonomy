@@ -6,6 +6,7 @@ use App\ConservationDocument;
 use App\ConservationLegislation;
 use App\Country;
 use App\Import;
+use App\Jobs\SendTaxonSyncRequest;
 use App\RedList;
 use App\Stage;
 use App\Support\Localization;
@@ -720,17 +721,18 @@ class TaxonImport extends BaseImport
     private function connectMissingCountry(Taxon $taxon)
     {
         $data['taxon'] = $taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries')->toArray();
-        $data['parent'] = [];
+        $data['taxon']['parent'] = [];
 
         $parent = $taxon->parent;
 
         if ($parent) {
-            $data['parent']['name'] = $parent->name;
-            $data['parent']['rank'] = $parent->rank;
+            $data['taxon']['parent']['name'] = $parent->name;
+            $data['taxon']['parent']['rank'] = $parent->rank;
+            $data['taxon']['parent']['ancestors_names'] = $parent->ancestors_names;
         }
 
         $user = $this->import->user();
-        $data['taxon']['reason'] = "Updating taxon from import by " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
+        $data['taxon']['reason'] = "Updating taxon from import by user: " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
             if (! $country->active) {
@@ -751,8 +753,7 @@ class TaxonImport extends BaseImport
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            http::post($country->url . '/api/taxonomy/sync', $data);
-
+            dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data))->delay(now()->addSeconds(5));
         }
     }
 }
