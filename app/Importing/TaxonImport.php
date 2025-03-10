@@ -15,6 +15,7 @@ use App\Taxon;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -753,7 +754,6 @@ class TaxonImport extends BaseImport
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data))->delay(now()->addSeconds(5));
-
         }
     }
 }
