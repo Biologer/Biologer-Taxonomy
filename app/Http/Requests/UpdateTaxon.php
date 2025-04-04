@@ -73,6 +73,10 @@ class UpdateTaxon extends FormRequest
             'countries_ids.*' => ['required', Rule::in(Country::pluck('id')->all())],
             'synonyms' => ['array'],
             'removed_synonyms' => ['array'],
+            'countries' => ['array'],
+            'countries.*.restricted' => 'boolean',
+            'countries.*.allochthonous' => 'boolean',
+            'countries.*.invasive' => 'boolean',
         ];
     }
 
@@ -114,6 +118,8 @@ class UpdateTaxon extends FormRequest
 
             $this->syncRelations($taxon);
 
+            $this->updateCountriesAdditionalData($taxon);
+
             $this->logUpdatedActivity($taxon, $oldData);
 
             $taxon->save();
@@ -137,6 +143,19 @@ class UpdateTaxon extends FormRequest
         return collect($redListsData)->mapWithKeys(function ($item) {
             return [$item['red_list_id'] => ['category' => $item['category']]];
         })->all();
+    }
+
+    private function updateCountriesAdditionalData(Taxon $taxon)
+    {
+        $countriesData = $this->input('countries', []);
+
+        foreach ($countriesData as $countryId => $countryData) {
+            $taxon->countries()->updateExistingPivot($countryId, [
+                'restricted' => $countryData['restricted'] ?? false,
+                'allochthonous' => $countryData['allochthonous'] ?? false,
+                'invasive' => $countryData['invasive'] ?? false,
+            ]);
+        }
     }
 
     /**

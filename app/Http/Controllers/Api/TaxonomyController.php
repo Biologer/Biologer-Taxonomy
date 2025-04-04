@@ -342,12 +342,8 @@ class TaxonomyController
         $data['taxon']['reason'] = $reason;
         $countries = $taxon->countries()->get();
 
-        foreach ($countries as $country) {
+        foreach ($taxon->countries()->where('active', true)->get() as $country) {
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
-
-            if (! $country->active) {
-                continue;
-            }
 
             $data['country_ref'] = [];
 
@@ -360,6 +356,12 @@ class TaxonomyController
             foreach ($country->conservationDocuments()->get()->toArray() as $item) {
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
+
+            $data['country_ref']['restricted'] = $country->pivot->restricted;
+            $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
+            $data['country_ref']['invasive'] = $country->pivot->invasive;
+
+            dd($data);
 
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
