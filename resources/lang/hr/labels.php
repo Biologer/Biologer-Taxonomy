@@ -89,6 +89,7 @@ return [
         'synonym_author' => 'Unesi autora sinonima',
 
         'countries' => 'Države',
+        'please_select_country' => 'Odaberite zemlje na vrhu strane za koje želite da dodate ograničene, alohtone i/ili invazivne podatke.',
     ],
 
     'field_observations' => [
@@ -327,5 +328,10 @@ return [
         'selected' => 'Države u kojima je zabeležen takson.',
         'title' => 'Odaberite državu',
         'processing' => 'Obrada zahteva je u toku...',
+        'rs' => 'Srbija',
+        'hr' => 'Hrvatska',
+        'ba' => 'Bosna i Hercegovina',
+        'me' => 'Crna Gora',
+        'dev' => 'Biologer Dev',
     ],
 ];

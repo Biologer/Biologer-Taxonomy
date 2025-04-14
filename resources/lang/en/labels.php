@@ -67,7 +67,7 @@ return [
         'fe_old_id' => '(old) FaunaEuropea ID',
         'fe_id' => 'FaunaEuropea ID',
         'restricted' => 'Taxon data is restricted',
-        'allochthonous' => 'Taxin is allochthonous',
+        'allochthonous' => 'Taxon is allochthonous',
         'invasive' => 'Taxon is invasive',
         'stages' => 'Stages',
         'conservation_legislations' => 'Conservation Legislations',
@@ -89,6 +89,7 @@ return [
         'synonym_author' => 'Insert synonyms author',
 
         'countries' => 'Countries',
+        'please_select_country' => 'Please select countries on page top for which you want to add restricted data, allochthonous and/or invasive data.',
     ],
 
     'field_observations' => [
@@ -330,5 +331,10 @@ return [
         'selected' => 'Countries that have selected taxa.',
         'title' => 'Choose country',
         'processing' => 'Your request is in processing state...',
+        'rs' => 'Serbia',
+        'hr' => 'Croatia',
+        'ba' => 'Bosnia and Hercegovina',
+        'me' => 'Montenegro',
+        'dev' => 'Biologer Dev',
     ],
 ];

@@ -10,7 +10,7 @@
             :native-value="country.id"
             :disabled="isDisabled(country)"
           >
-            {{ country.name }}
+            {{ trans(`labels.countries.${country.code}`) }}
           </b-checkbox>
         </div>
       </b-field>
@@ -112,28 +112,54 @@
     </div>
 
     <div class="columns">
+      <div class="column"></div>
       <div class="column">
         <b-field :label="trans('labels.taxa.restricted')">
-          <div class="field">
-            <b-switch v-model="form.restricted">
-              {{ form.restricted ? trans('Yes') : trans('No') }}
-            </b-switch>
-          </div>
         </b-field>
       </div>
       <div class="column">
         <b-field :label="trans('labels.taxa.allochthonous')">
-          <b-switch v-model="form.allochthonous">
-            {{ form.allochthonous ? trans('Yes') : trans('No') }}
-          </b-switch>
         </b-field>
       </div>
       <div class="column">
         <b-field :label="trans('labels.taxa.invasive')">
-          <b-switch v-model="form.invasive">
-            {{ form.invasive ? trans('Yes') : trans('No') }}
-          </b-switch>
         </b-field>
+      </div>
+    </div>
+
+    <div v-if="countries.filter(c => form.countries_ids.includes(c.id)).length === 0" class="field">
+      {{ trans('labels.taxa.please_select_country') }}
+    </div>
+
+    <div class="columns" v-else>
+      <div class="column">
+        <div v-for="country in countries.filter(c => form.countries_ids.includes(c.id))" :key="country.id">
+          <b-field :label="trans(`labels.countries.${country.code}`)">
+          </b-field>
+        </div>
+      </div>
+      <div class="column">
+        <div v-for="country in countries.filter(c => form.countries_ids.includes(c.id))" :key="country.id">
+          <b-switch v-model="form.countries[country.id].restricted">
+            {{ form.countries[country.id].restricted ? trans('Yes') : trans('No') }}
+          </b-switch>
+        </div>
+      </div>
+
+      <div class="column">
+        <div v-for="country in countries.filter(c => form.countries_ids.includes(c.id))" :key="country.id">
+          <b-switch v-model="form.countries[country.id].allochthonous">
+            {{ form.countries[country.id].allochthonous ? trans('Yes') : trans('No') }}
+          </b-switch>
+        </div>
+      </div>
+
+      <div class="column">
+        <div v-for="country in countries.filter(c => form.countries_ids.includes(c.id))" :key="country.id">
+          <b-switch v-model="form.countries[country.id].invasive">
+             {{ form.countries[country.id].invasive ? trans('Yes') : trans('No') }}
+          </b-switch>
+        </div>
       </div>
     </div>
 
@@ -390,6 +416,7 @@ export default {
       synonym_author: null,
       synonym_error: null,
       synonyms: this.taxon.synonyms,
+      restrictedSwitch: 0
     }
   },
 
@@ -414,12 +441,42 @@ export default {
 
     sanitizedName: {
       get() {
-        return this.form.name;
+        return this.form.name || '';
       },
       set(value) {
-        this.form.name = value.replace(/\s+/g, ' ').trim();
+        const sanitized = value.replace(/\s+/g, ' ').trim();
+        if (this.form.name !== sanitized) {
+          this.form.name = sanitized;
+        }
       }
-    }
+    },
+
+    booleanRestricted: {
+      get() {
+        return Boolean(this.form.countries[country.id]?.restricted);
+      },
+      set(value) {
+        this.$set(this.form.countries[country.id], 'restricted', value ? 1 : 0);
+      }
+    },
+
+    booleanInvasive: {
+      get() {
+        return Boolean(this.form.countries[country.id]?.invasive);
+      },
+      set(value) {
+        this.$set(this.form.countries[country.id], 'invasive', value ? 1 : 0);
+      }
+    },
+
+    booleanAllochthon: {
+      get() {
+        return Boolean(this.form.countries[country.id]?.allochthon);
+      },
+      set(value) {
+        this.$set(this.form.countries[country.id], 'allochthon', value ? 1 : 0);
+      }
+    },
   },
 
   watch: {
@@ -431,10 +488,41 @@ export default {
 
     'form.name': {
       handler(value) {
-        this.sanitizedName = value;
+        if (value) {
+          const sanitized = value.replace(/\s+/g, ' ').trim();
+          if (value !== sanitized) {
+            this.form.name = sanitized;
+          }
+        }
       },
       immediate: true
+    },
+
+    watch: {
+      'form.countries_ids': {
+        handler(newVal) {
+          newVal.forEach(id => {
+            const taxonCountry = this.taxon.countries.find(c => c.id === id);
+
+            if (!this.form.countries[id]) {
+              this.$set(this.form.countries, id, {
+                restricted: taxonCountry?.pivot?.restricted ?? false,
+                allochthonous: taxonCountry?.pivot?.allochthonous ?? false,
+                invasive: taxonCountry?.pivot?.invasive ?? false
+              });
+              this.refreshComponent();
+            } else {
+              this.$set(this.form.countries[id], 'restricted', taxonCountry?.pivot?.restricted ?? false);
+              this.$set(this.form.countries[id], 'allochthonous', taxonCountry?.pivot?.allochthonous ?? false);
+              this.$set(this.form.countries[id], 'invasive', taxonCountry?.pivot?.invasive ?? false);
+              this.refreshComponent();
+            }
+          });
+        },
+        immediate: true
+      }
     }
+
   },
 
   methods: {
@@ -445,6 +533,7 @@ export default {
         conservation_legislations_ids: this.taxon.conservation_legislations.map(conservationLegislation => conservationLegislation.id),
         conservation_documents_ids: this.taxon.conservation_documents.map(conservationDocument => conservationDocument.id),
         countries_ids: this.taxon.countries.map(country => country.id),
+        countries: this.initializeCountryValues(),
         red_lists_data: this.taxon.red_lists.map(redList => {
           return { red_list_id: redList.id, category: redList.pivot.category }
         }),
@@ -457,6 +546,26 @@ export default {
       }, {
         resetOnSuccess: false
       })
+    },
+
+    initializeCountryValues() {
+      let countryData = {};
+
+      this.countries.forEach(country => {
+        const taxonCountry = this.taxon.countries.find(c => c.id === country.id);
+
+        countryData[country.id] = {
+          restricted: taxonCountry?.pivot?.restricted ?? this.taxon.restricted,
+          allochthonous: taxonCountry?.pivot?.allochthonous ?? this.taxon.allochthonous,
+          invasive: taxonCountry?.pivot?.invasive ?? this.taxon.invasive,
+        };
+      });
+
+      return countryData;
+    },
+
+    refreshComponent() {
+      this.componentKey++;
     },
 
     /**

@@ -47,14 +47,20 @@ class TaxaController
     /**
      * Show page to edit taxon.
      *
-     * @param  \App\Taxon  $taxon
+     * @param \App\Taxon $taxon
      * @return \Illuminate\View\View
      */
     public function edit(Taxon $taxon)
     {
         return view('admin.taxa.edit', [
-            'taxon' => $taxon->load(['parent', 'redLists', 'conservationLegislations', 'conservationDocuments',
-                'stages', 'countries', ]),
+            'taxon' => $taxon->load([
+                'parent',
+                'redLists',
+                'conservationLegislations',
+                'conservationDocuments',
+                'stages',
+                'countries',
+            ]),
             'ranks' => Taxon::getRankOptions(),
             'conservationLegislations' => ConservationLegislation::all(),
             'conservationDocuments' => ConservationDocument::all(),

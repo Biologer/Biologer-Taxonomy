@@ -71,6 +71,10 @@ class StoreTaxon extends FormRequest
             'countries_ids' => ['nullable', 'array'],
             'countries_ids.*' => ['required', Rule::in(Country::pluck('id')->all())],
             'synonyms' => ['array'],
+            'countries' => ['array'],
+            'countries.*.restricted' => 'boolean',
+            'countries.*.allochthonous' => 'boolean',
+            'countries.*.invasive' => 'boolean',
         ];
     }
 
@@ -141,6 +145,7 @@ class StoreTaxon extends FormRequest
             return tap($this->createTaxon(), function ($taxon) {
                 $this->createSynonyms($taxon);
                 $this->syncRelations($taxon);
+                $this->updateCountriesAdditionalData($taxon);
                 $this->logCreatedActivity($taxon);
                 $this->sendNewTaxonToLocalDatabases($taxon->load('conservationLegislations', 'redLists', 'conservationDocuments', 'stages', 'synonyms', 'countries'));
             });
@@ -158,6 +163,19 @@ class StoreTaxon extends FormRequest
         activity()->performedOn($taxon)
             ->causedBy($this->user())
             ->log('created');
+    }
+
+    private function updateCountriesAdditionalData(Taxon $taxon)
+    {
+        $countriesData = $this->input('countries', []);
+
+        foreach ($countriesData as $countryId => $countryData) {
+            $taxon->countries()->updateExistingPivot($countryId, [
+                'restricted' => $countryData['restricted'] ?? false,
+                'allochthonous' => $countryData['allochthonous'] ?? false,
+                'invasive' => $countryData['invasive'] ?? false,
+            ]);
+        }
     }
 
     private function createSynonyms($taxon)
@@ -186,10 +204,7 @@ class StoreTaxon extends FormRequest
 
         $data['taxon']['reason'] = $this->input('reason');
 
-        foreach ($taxon->countries()->get() as $country) {
-            if (! $country->active) {
-                continue;
-            }
+        foreach ($taxon->countries()->where('active', true)->get() as $country) {
 
             $data['country_ref'] = [];
 
@@ -203,7 +218,13 @@ class StoreTaxon extends FormRequest
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
 
+            $data['country_ref']['restricted'] = $country->pivot->restricted;
+            $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
+            $data['country_ref']['invasive'] = $country->pivot->invasive;
+
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
+
+            dd($data);
 
             try {
                 http::post($country->url.'/api/taxonomy/sync', $data);

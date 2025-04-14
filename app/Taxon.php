@@ -311,7 +311,9 @@ class Taxon extends Model
      */
     public function countries()
     {
-        return $this->belongsToMany(Country::class);
+        return $this->belongsToMany(Country::class)
+            ->using(TaxonCountry::class)
+            ->withPivot(['restricted', 'invasive', 'allochthonous']);
     }
 
     /**
