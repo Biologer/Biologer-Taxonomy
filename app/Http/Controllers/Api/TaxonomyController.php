@@ -361,8 +361,6 @@ class TaxonomyController
             $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
             $data['country_ref']['invasive'] = $country->pivot->invasive;
 
-            dd($data);
-
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
 
