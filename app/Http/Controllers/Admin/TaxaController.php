@@ -33,7 +33,24 @@ class TaxaController
      */
     public function create()
     {
+        $emptyTaxon = new Taxon([
+            'name' => null,
+            'parent_id' => null,
+            'rank' => 'species',
+            'rank_level' => 10,
+            'author' => null,
+            'fe_id' => null,
+            'fe_old_id' => null,
+            'restricted' => false,
+            'allochthonous' => false,
+            'invasive' => false,
+            'uses_atlas_codes' => false,
+            'countries' => [],
+        ]);
+        $emptyTaxon->countries = collect();
+
         return view('admin.taxa.create', [
+            'taxon' => $emptyTaxon,
             'ranks' => Taxon::getRankOptions(),
             'conservationLegislations' => ConservationLegislation::all(),
             'conservationDocuments' => ConservationDocument::all(),
