@@ -157,7 +157,7 @@
       <div class="column">
         <div v-for="country in countries.filter(c => form.countries_ids.includes(c.id))" :key="country.id">
           <b-switch v-model="form.countries[country.id].invasive">
-             {{ form.countries[country.id].invasive ? trans('Yes') : trans('No') }}
+            {{ form.countries[country.id].invasive ? trans('Yes') : trans('No') }}
           </b-switch>
         </div>
       </div>
@@ -310,7 +310,7 @@
       </b-field>
     </b-field>
 
-      <hr>
+    <hr>
 
     <button
       type="submit"
@@ -416,7 +416,8 @@ export default {
       synonym_author: null,
       synonym_error: null,
       synonyms: this.taxon.synonyms,
-      restrictedSwitch: 0
+      restrictedSwitch: 0,
+      componentKey: 0,
     }
   },
 
@@ -498,31 +499,40 @@ export default {
       immediate: true
     },
 
-    watch: {
-      'form.countries_ids': {
-        handler(newVal) {
-          newVal.forEach(id => {
-            const taxonCountry = this.taxon.countries.find(c => c.id === id);
+    'form.countries_ids': {
+      handler(newVal) {
+        newVal.forEach(id => {
+          const country = this.taxon.countries.find(c => c.id === parseInt(id));
 
-            if (!this.form.countries[id]) {
-              this.$set(this.form.countries, id, {
-                restricted: taxonCountry?.pivot?.restricted ?? false,
-                allochthonous: taxonCountry?.pivot?.allochthonous ?? false,
-                invasive: taxonCountry?.pivot?.invasive ?? false
-              });
-              this.refreshComponent();
-            } else {
-              this.$set(this.form.countries[id], 'restricted', taxonCountry?.pivot?.restricted ?? false);
-              this.$set(this.form.countries[id], 'allochthonous', taxonCountry?.pivot?.allochthonous ?? false);
-              this.$set(this.form.countries[id], 'invasive', taxonCountry?.pivot?.invasive ?? false);
-              this.refreshComponent();
+          if (!this.form.countries[id]) {
+            let restrictedValue = this.taxon.restricted ?? false;
+            let allochthonousValue = this.taxon.allochthonous ?? false;
+            let invasiveValue = this.taxon.invasive ?? false;
+
+            if (country && country.pivot) {
+              restrictedValue = country.pivot.restricted;
+              allochthonousValue = country.pivot.allochthonous;
+              invasiveValue = country.pivot.invasive;
             }
-          });
-        },
-        immediate: true
-      }
-    }
 
+            this.$set(this.form.countries, id, {
+              restricted: restrictedValue,
+              allochthonous: allochthonousValue,
+              invasive: invasiveValue
+            });
+            this.refreshComponent();
+          }
+        });
+
+        Object.keys(this.form.countries).forEach(id => {
+          if (!newVal.includes(parseInt(id))) {
+            this.$delete(this.form.countries, id);
+            this.refreshComponent();
+          }
+        });
+      },
+      immediate: true
+    }
   },
 
   methods: {
@@ -553,7 +563,7 @@ export default {
 
       this.countries.forEach(country => {
         const taxonCountry = this.taxon.countries.find(c => c.id === country.id);
-
+        console.log('initialize: ', country);
         countryData[country.id] = {
           restricted: taxonCountry?.pivot?.restricted ?? this.taxon.restricted,
           allochthonous: taxonCountry?.pivot?.allochthonous ?? this.taxon.allochthonous,
@@ -624,11 +634,11 @@ export default {
      * @param  {Object} field
      */
     removeRedList(index) {
-        this.form.red_lists_data.splice(index, 1)
+      this.form.red_lists_data.splice(index, 1)
     },
 
     getRedListName(id) {
-        return _find(this.redLists, { id }).name
+      return _find(this.redLists, { id }).name
     },
 
     /**
