@@ -563,7 +563,7 @@ export default {
 
       this.countries.forEach(country => {
         const taxonCountry = this.taxon.countries.find(c => c.id === country.id);
-        console.log('initialize: ', country);
+
         countryData[country.id] = {
           restricted: taxonCountry?.pivot?.restricted ?? this.taxon.restricted,
           allochthonous: taxonCountry?.pivot?.allochthonous ?? this.taxon.allochthonous,
