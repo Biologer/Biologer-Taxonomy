@@ -224,8 +224,6 @@ class StoreTaxon extends FormRequest
 
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            dd($data);
-
             try {
                 http::post($country->url.'/api/taxonomy/sync', $data);
             } catch (\Exception $e) {
