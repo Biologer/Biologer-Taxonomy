@@ -90,6 +90,9 @@ return [
         'add_synonym' => 'Dodaj sinonim',
         'synonym_name' => 'Unesi naziv sinonima',
         'synonym_author' => 'Unesi autora sinonima',
+
+        'countries' => 'Države',
+        'please_select_country' => 'Odaberite zemlje na vrhu strane za koje želite da dodate ograničene, alohtone i/ili invazivne podatke.',
     ],
 
     'field_observations' => [
@@ -183,7 +186,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Odaberi kolone',
-        'select_csv_file' => 'Odaberi CSV datoteku',
+        'select_import_file' => 'Odaberi CSV/XLSX datoteku',
         'available' => 'Dostupne',
         'chosen' => 'Odabrane',
         'import' => 'Uvezi',
@@ -193,6 +196,8 @@ return [
         'columns' => 'Kolone',
         'user' => 'Za korisnika',
         'approve_curated' => 'Potvrdi nalaze za taksone koje uređujem',
+        'replace' => 'Zamjeni postojeće podatke sa podacima iz uvoza',
+        'append' => 'Samo dodaj nedostajuće podatke iz uvoza, ali ne mjenjaj postojeće podatke',
     ],
 
     'announcements' => [
@@ -324,5 +329,16 @@ return [
             'field_observation_marked_unidentifiable' => 'Nalaz je označen kao da nije moguća identifikacija',
             'field_observation_for_approval' => 'Nov nalaz za pregled',
         ],
+    ],
+
+    'countries' => [
+        'selected' => 'Države u kojima je zabeležen takson.',
+        'title' => 'Odaberite državu',
+        'processing' => 'Obrada zahteva je u toku...',
+        'rs' => 'Srbija',
+        'hr' => 'Hrvatska',
+        'ba' => 'Bosna i Hercegovina',
+        'me' => 'Crna Gora',
+        'dev' => 'Biologer Dev',
     ],
 ];

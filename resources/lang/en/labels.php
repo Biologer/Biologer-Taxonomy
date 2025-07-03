@@ -90,6 +90,9 @@ return [
         'add_synonym' => 'Add synonym',
         'synonym_name' => 'Insert synonyms name',
         'synonym_author' => 'Insert synonyms author',
+
+        'countries' => 'Countries',
+        'please_select_country' => 'Please select countries on page top for which you want to add restricted data, allochthonous and/or invasive data.',
     ],
 
     'field_observations' => [
@@ -183,7 +186,7 @@ return [
 
     'imports' => [
         'choose_columns' => 'Choose Columns',
-        'select_csv_file' => 'Select CSV file',
+        'select_import_file' => 'Select CSV/XLSX file',
         'available' => 'Available',
         'chosen' => 'Chosen',
         'import' => 'Import',
@@ -193,6 +196,8 @@ return [
         'columns' => 'Columns',
         'user' => 'For User',
         'approve_curated' => 'Approve Curated',
+        'replace' => 'Replace existing data with import',
+        'append' => 'Append missing data from import, dont change existing data',
     ],
 
     'announcements' => [
@@ -308,6 +313,10 @@ return [
     ],
 
     'preferences' => [
+        'general' => [
+            'locale' => 'Preferred locale',
+        ],
+
         'account' => [
             'delete_account' => 'Delete Account',
             'delete_observations' => 'Delete observations as well',
@@ -324,9 +333,16 @@ return [
             'field_observation_marked_unidentifiable' => 'Observation has been marked as unidentifiable',
             'field_observation_for_approval' => 'New observation for approval',
         ],
+    ],
 
-        'data_entry' => [
-            'default_stage_adult' => 'Use "adult" as default stage if available for the taxon.',
-        ],
+    'countries' => [
+        'selected' => 'Countries that have selected taxa.',
+        'title' => 'Choose country',
+        'processing' => 'Your request is in processing state...',
+        'rs' => 'Serbia',
+        'hr' => 'Croatia',
+        'ba' => 'Bosnia and Hercegovina',
+        'me' => 'Montenegro',
+        'dev' => 'Biologer Dev',
     ],
 ];
