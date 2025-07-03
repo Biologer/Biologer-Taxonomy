@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class StatsRepository
 {
@@ -17,6 +18,18 @@ class StatsRepository
     {
         return Cache::remember('localCommunityPageData', now()->addMinutes(5), function () {
             return $this->getLocalCommunityDataFromDb();
+        });
+    }
+
+    /**
+     * Retrieve data required for privacy policy page.
+     *
+     * @return array
+     */
+    public function getAdminData()
+    {
+        return Cache::remember('privacyPolicyPageData', now()->addMinutes(5), function () {
+            return $this->getAdminDataFromDb();
         });
     }
 
@@ -40,6 +53,29 @@ class StatsRepository
             'admins' => User::admins()->sortByName()->get(),
             'curators' => $curators,
             'taxonomicGroupsCount' => $taxonomicGroupsCount,
+        ];
+    }
+
+    /**
+     * Retrieve data required for privacy policy page from DB.
+     *
+     * @return array
+     */
+    private function getAdminDataFromDb()
+    {
+        $admins = User::admins()->sortByName()->get();
+        $obfuscated_data = [];
+
+        foreach ($admins as $admin) {
+            $obfuscated_data[] = [
+                'full_name' => $admin['full_name'],
+                'institution' => $admin['institution'],
+                'email' => Str::replace('@', ' [at] ', $admin['email']),
+            ];
+        }
+
+        return [
+            'admins' => $obfuscated_data,
         ];
     }
 

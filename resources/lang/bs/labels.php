@@ -31,6 +31,7 @@ return [
         'last_name' => 'Prezime',
         'institution' => 'Institucija',
         'email' => 'E-pošta',
+        'email_confirmation' => 'Ponovite e-poštu',
         'password' => 'Lozinka',
         'password_confirmation' => 'Ponovite lozinku',
         'verification_code' => 'Verifikacioni kod',
@@ -50,6 +51,7 @@ return [
     'users' => [
         'first_name' => 'Ime',
         'last_name' => 'Prezime',
+        'full_name' => 'Ime i prezime',
         'institution' => 'Institucija',
         'roles' => 'Uloge',
         'curated_taxa' => 'Taksoni koje uređuje',
@@ -66,6 +68,7 @@ return [
         'description' => 'Opis',
         'fe_old_id' => '(stara) FaunaEuropea ID',
         'fe_id' => 'FaunaEuropea ID',
+        'ancestors_names' => 'Nazivi predaka',
         'restricted' => 'Takson sa ograničenim podacima',
         'allochthonous' => 'Takson je alohton',
         'invasive' => 'Takson je invazivan',
@@ -87,9 +90,6 @@ return [
         'add_synonym' => 'Dodaj sinonim',
         'synonym_name' => 'Unesi naziv sinonima',
         'synonym_author' => 'Unesi autora sinonima',
-
-        'countries' => 'Države',
-        'please_select_country' => 'Odaberite zemlje na vrhu strane za koje želite da dodate ograničene, alohtone i/ili invazivne podatke.',
     ],
 
     'field_observations' => [
@@ -175,11 +175,15 @@ return [
             'custom' => 'Prilagođeno',
             'darwin_core' => 'Darwin Core',
         ],
+        'group_name' => 'Naziv grupe',
+        'group_ids' => 'ID Grupa',
+        'stage_names' => 'Stadijumi',
+        'stage_ids' => 'ID Stadijuma',
     ],
 
     'imports' => [
         'choose_columns' => 'Odaberi kolone',
-        'select_import_file' => 'Odaberi CSV/XLSX datoteku',
+        'select_csv_file' => 'Odaberi CSV datoteku',
         'available' => 'Dostupne',
         'chosen' => 'Odabrane',
         'import' => 'Uvezi',
@@ -189,8 +193,6 @@ return [
         'columns' => 'Kolone',
         'user' => 'Za korisnika',
         'approve_curated' => 'Potvrdi nalaze za taksone koje uređujem',
-        'replace' => 'Zameni postojeće podatke sa podacima iz uvoza',
-        'append' => 'Samo dodaj nedostajuće podatke iz uvoza, ali ne menjaj postojeće podatke',
     ],
 
     'announcements' => [
@@ -322,16 +324,9 @@ return [
             'field_observation_marked_unidentifiable' => 'Nalaz je označen kao da nije moguća identifikacija',
             'field_observation_for_approval' => 'Novi nalaz za pregled',
         ],
-    ],
 
-    'countries' => [
-        'selected' => 'Države u kojima je zabeležen takson.',
-        'title' => 'Odaberite državu',
-        'processing' => 'Obrada zahteva je u toku...',
-        'rs' => 'Srbija',
-        'hr' => 'Hrvatska',
-        'ba' => 'Bosna i Hercegovina',
-        'me' => 'Crna Gora',
-        'dev' => 'Biologer Dev',
+        'data_entry' => [
+            'default_stage_adult' => 'Koristi "Odrasla jedinka" kao podrazumjevani stadijum ako je dostupan za takson.',
+        ],
     ],
 ];
