@@ -40,19 +40,8 @@ class StatsRepository
      */
     private function getLocalCommunityDataFromDb()
     {
-        $curators = User::curators()->with(['curatedTaxa' => function ($query) {
-            $query->orderByAncestry();
-        }])->sortByName()->get();
-
-        $taxonomicGroupsCount = Collection::make(
-            $curators->pluck('curatedTaxa')->flatten(1)
-        )->unique()->count();
-
         return [
-            'usersCount' => User::count(),
             'admins' => User::admins()->sortByName()->get(),
-            'curators' => $curators,
-            'taxonomicGroupsCount' => $taxonomicGroupsCount,
         ];
     }
 
