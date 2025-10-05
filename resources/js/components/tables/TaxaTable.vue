@@ -390,7 +390,15 @@ export default {
     confirmRemove(row) {
 
       this.$buefy.dialog.confirm({
-        message: this.trans('Are you sure you want to delete this record?'),
+        message: `
+          <div class="has-text-centered">
+            ${this.trans('Taxa from <b>connected Local database</b> will also be <b>deleted</b>!')}
+            <br>
+            ${this.trans('Disconnect taxa from local database if you want to preserve it locally.')}
+            <br><br>
+            ${this.trans('Are you sure you want to delete this record?')}
+          </div>
+        `,
         confirmText: this.trans('buttons.delete'),
         cancelText: this.trans('buttons.cancel'),
         type: 'is-danger',
