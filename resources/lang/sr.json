@@ -24,6 +24,8 @@
     "Saved successfully": "Успешно сачувано",
     "<strong>Note:</strong> Changes to license preferences will act as defaults for newly added observations and photos, and will not affect old entries.": "<strong>Напомена:</strong> Измене у подешавањима лиценце ће бити примењенe као подразумеване вредности за нове уносе и фотографије, и неће имати утицаја на старе.",
     "No data...": "Нема података...",
+    "Taxa from <b>connected Local database</b> will also be <b>deleted</b>!": "Таксони који су <b>повезани са локалним базама</b> ће такође бити <b>обрисани</b>!",
+    "Disconnect taxa from local database if you want to preserve it locally.": "Откачите таксоне из локалних база уколико желите да их задржите локално.",
     "Are you sure you want to delete this record?": "Да ли сте сигурни да желите обрисати овај унос?",
     "This will remove all observations connected to this publications. Are you sure you want to delete this publication?": "Овим ћете обрисати и све налазе повезане са публикацијом. Да ли сте сигурни да желите обрисати ову публикацију?",
     "Record deleted": "Унос обрисан",

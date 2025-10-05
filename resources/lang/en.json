@@ -24,6 +24,8 @@
     "Saved successfully": "Saved successfully",
     "<strong>Note:</strong> Changes to license preferences will act as defaults for newly added observations and photos, and will not affect old entries.": "<strong>Note:</strong> Changes to license preferences will act as defaults for newly added observations and photos, and will not affect old entries.",
     "No data...": "No data...",
+    "Taxa from <b>connected Local database</b> will also be <b>deleted</b>!": "Taxa from <b>connected Local database</b> will also be <b>deleted</b>!",
+    "Disconnect taxa from local database if you want to preserve it locally.": "Disconnect taxa from local database if you want to preserve it locally.",
     "Are you sure you want to delete this record?": "Are you sure you want to delete this record?",
     "This will remove all observations connected to this publications. Are you sure you want to delete this publicatoin?": "This will remove all observations connected to this publications. Are you sure you want to delete this publication?",
     "Record deleted": "Record deleted",
