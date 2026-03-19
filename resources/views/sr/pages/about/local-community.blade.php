@@ -6,9 +6,7 @@
             <h1>Локална заједница</h1>
 
             <p>
-                Назив локалне заједнице: {{ config('biologer.community.name') }}.<br>
-                Држава: {{ __(config('biologer.community.country')) }}.</br>
-                Адреса: {{ config('biologer.community.address') }}.
+                Назив локалне заједнице: {{ config('biologer.community.name') }}.
             </p>
 
             <p class="has-text-justified">
