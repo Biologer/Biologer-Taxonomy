@@ -35,7 +35,7 @@
         "mcamara/laravel-localization": "^1.8.1",
         "meyfa/php-svg": "^0.11.3",
         "myclabs/php-enum": "^1.8.5",
-        "nikazooz/laravel-captcha": "^v1.6.0",
+        "nikazooz/laravel-captcha": "^v1.7.0",
         "php-coord/php-coord": "^v4.7.1",
         "runalyze/dem-reader": "^v1.2.0",
         "spatie/laravel-activitylog": "^3.17",
