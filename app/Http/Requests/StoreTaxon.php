@@ -206,7 +206,11 @@ class StoreTaxon extends FormRequest
 
         foreach ($taxon->countries()->where('active', true)->get() as $country) {
 
-            $data['country_ref'] = [];
+            $data['country_ref'] = [
+                'redLists' => [],
+                'legs' => [],
+                'docs' => [],
+            ];
 
             foreach ($country->redLists()->get()->toArray() as $item) {
                 $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
