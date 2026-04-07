@@ -351,7 +351,10 @@ class TaxonomyController
         foreach ($taxon->countries()->where('active', true)->get() as $country) {
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
+
+
             Log::info("Country: ", $country->toArray());
+            Log::info('Taxon country legislation ref', $country->conservationLegislations->pluck('ref_id')->toArray());
 
             $data['country_ref'] = [
                 'redLists' => [],
@@ -359,19 +362,19 @@ class TaxonomyController
                 'docs' => [],
             ];
 
-            foreach ($country->redLists()->get()->toArray() as $item) {
+            foreach ($taxon->redLists()->get()->toArray() as $item) {
                 $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
             }
-            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
+            foreach ($taxon->conservationLegislations()->get()->toArray() as $item) {
                 $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
             }
-            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
+            foreach ($taxon->conservationDocuments()->get()->toArray() as $item) {
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
 
-            $data['country_ref']['restricted'] = $country->pivot->restricted;
-            $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
-            $data['country_ref']['invasive'] = $country->pivot->invasive;
+            $data['country_ref']['restricted'] = $taxon->pivot->restricted;
+            $data['country_ref']['allochthonous'] = $taxon->pivot->allochthonous;
+            $data['country_ref']['invasive'] = $taxon->pivot->invasive;
 
             Log::info('Sent for update...', $data);
 
