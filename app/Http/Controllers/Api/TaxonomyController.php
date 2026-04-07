@@ -358,7 +358,7 @@ class TaxonomyController
             ];
 
             foreach ($country->conservationLegislations() as $item) {
-                Log::info('Conservation Legislation:', $item);
+                Log::info('Conservation Legislation:', ($country->conservationLegislations()->get()->toArray()));
                 $data['country_ref']['legs'][$item->id] = $item->pivot->ref_id;
             }
             foreach ($country->conservationDocuments()->get() as $item) {
