@@ -15,6 +15,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class TaxonomyController
 {
@@ -369,6 +370,8 @@ class TaxonomyController
             $data['country_ref']['restricted'] = $country->pivot->restricted;
             $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
             $data['country_ref']['invasive'] = $country->pivot->invasive;
+
+            Log::info('Sent for update...', $country->url, $data);
 
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
