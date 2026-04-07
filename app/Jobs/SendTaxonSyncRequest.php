@@ -36,6 +36,7 @@ class SendTaxonSyncRequest implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('Sending taxon sync request...');
         try {
             $response = Http::retry($this->tries, 2000, function ($exception) {
                 return $exception->getCode() === 429;
