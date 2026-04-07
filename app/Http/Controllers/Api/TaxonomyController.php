@@ -357,9 +357,6 @@ class TaxonomyController
                 'docs' => [],
             ];
 
-            foreach ($country->redLists() as $item) {
-                $data['country_ref']['redLists'][$item->id] = $item->pivot->ref_id;
-            }
             foreach ($country->conservationLegislations() as $item) {
                 Log::info('Conservation Legislation:', $item);
                 $data['country_ref']['legs'][$item->id] = $item->pivot->ref_id;
