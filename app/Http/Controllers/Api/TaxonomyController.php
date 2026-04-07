@@ -357,14 +357,14 @@ class TaxonomyController
                 'docs' => [],
             ];
 
-            foreach ($country->redLists()->get()->toArray() as $item) {
-                $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
+            foreach ($country->redLists() as $item) {
+                $data['country_ref']['redLists'][$item->pivot->red_list_id] = $item->pivot->ref_id;
             }
-            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
-                $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
+            foreach ($country->conservationLegislations() as $item) {
+                $data['country_ref']['legs'][$item->pivot->leg_id] = $item->pivot->ref_id;
             }
-            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
-                $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
+            foreach ($country->conservationDocuments()->get() as $item) {
+                $data['country_ref']['docs'][$item->pivot->doc_id] = $item->pivot->ref_id;
             }
 
             $data['country_ref']['restricted'] = $country->pivot->restricted;
