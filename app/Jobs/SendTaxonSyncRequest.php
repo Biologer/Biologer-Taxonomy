@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
@@ -38,7 +39,7 @@ class SendTaxonSyncRequest implements ShouldQueue
         try {
             $response = Http::retry($this->tries, 2000, function ($exception) {
                 return $exception->getCode() === 429;
-            })->post($this->url . $this->path, $this->data);
+            })->post($this->url.$this->path, $this->data);
 
             if ($response->failed()) {
                 $attempt = $this->attempts();
@@ -52,8 +53,8 @@ class SendTaxonSyncRequest implements ShouldQueue
                 Log::info("Taxon sync successful for: {$this->url}{$this->path}");
             }
         } catch (\Exception $e) {
-            Log::error("Error in taxon sync: " . $e->getMessage(), [
-                'url' => $this->url . $this->path,
+            Log::error('Error in taxon sync: '.$e->getMessage(), [
+                'url' => $this->url.$this->path,
                 'data' => $this->data,
             ]);
             $this->fail($e);

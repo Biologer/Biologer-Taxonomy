@@ -644,13 +644,13 @@ class TaxonImport extends BaseImport
             ->map(function ($redList) {
                 $redListData = explode(' [', $redList, 2);
                 if (count($redListData) < 2) {
-                    return null;
+                    return;
                 }
 
                 $region = strtolower($redListData[0]);
                 $category = rtrim($redListData[1], ']');
 
-                $redList = $this->redLists->first(fn($rl) => strtolower($rl->getNameAttribute()) === $region);
+                $redList = $this->redLists->first(fn ($rl) => strtolower($rl->getNameAttribute()) === $region);
 
                 return $redList ? ['id' => $redList->id, 'category' => $category] : null;
             })
@@ -731,7 +731,7 @@ class TaxonImport extends BaseImport
         }
 
         $user = $this->import->user();
-        $data['taxon']['reason'] = "Updating taxon from import by user: " . $user->pluck('first_name')->join(' ') . ' ' . $user->pluck('last_name')->join(' ');
+        $data['taxon']['reason'] = 'Updating taxon from import by user: '.$user->pluck('first_name')->join(' ').' '.$user->pluck('last_name')->join(' ');
 
         foreach ($taxon->countries()->get() as $country) {
             if (! $country->active) {

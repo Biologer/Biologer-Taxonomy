@@ -123,7 +123,12 @@ class TaxonomyController
             $taxa[$id]['response']['reason'] = 'Data updated from Biologer Taxonomy database.';
         }
 
-        $country_ref = [];
+        $country_ref = [
+            'redLists' => [],
+            'legs' => [],
+            'docs' => [],
+        ];
+
         foreach ($country->redLists()->get()->toArray() as $item) {
             $country_ref['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
         }
@@ -345,7 +350,11 @@ class TaxonomyController
         foreach ($taxon->countries()->where('active', true)->get() as $country) {
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-            $data['country_ref'] = [];
+            $data['country_ref'] = [
+                'redLists' => [],
+                'legs' => [],
+                'docs' => [],
+            ];
 
             foreach ($country->redLists()->get()->toArray() as $item) {
                 $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
