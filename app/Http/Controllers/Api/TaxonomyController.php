@@ -362,19 +362,19 @@ class TaxonomyController
                 'docs' => [],
             ];
 
-            foreach ($taxon->redLists()->get()->toArray() as $item) {
+            foreach ($country->redLists()->get()->toArray() as $item) {
                 $data['country_ref']['redLists'][$item['pivot']['red_list_id']] = $item['pivot']['ref_id'];
             }
-            foreach ($taxon->conservationLegislations()->get()->toArray() as $item) {
+            foreach ($country->conservationLegislations()->get()->toArray() as $item) {
                 $data['country_ref']['legs'][$item['pivot']['leg_id']] = $item['pivot']['ref_id'];
             }
-            foreach ($taxon->conservationDocuments()->get()->toArray() as $item) {
+            foreach ($country->conservationDocuments()->get()->toArray() as $item) {
                 $data['country_ref']['docs'][$item['pivot']['doc_id']] = $item['pivot']['ref_id'];
             }
 
-            $data['country_ref']['restricted'] = $taxon->pivot->restricted;
-            $data['country_ref']['allochthonous'] = $taxon->pivot->allochthonous;
-            $data['country_ref']['invasive'] = $taxon->pivot->invasive;
+            $data['country_ref']['restricted'] = $country->pivot->restricted;
+            $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
+            $data['country_ref']['invasive'] = $country->pivot->invasive;
 
             Log::info('Sent for update...', $data);
 
