@@ -15,7 +15,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class TaxonomyController
 {
@@ -351,11 +350,6 @@ class TaxonomyController
         foreach ($taxon->countries()->where('active', true)->get() as $country) {
             $data['key'] = config('biologer.taxonomy_key_'.$country->code);
 
-
-
-            Log::info("Country: ", $country->toArray());
-            Log::info('Taxon country legislation ref', $country->conservationLegislations->pluck('ref_id')->toArray());
-
             $data['country_ref'] = [
                 'redLists' => [],
                 'legs' => [],
@@ -375,8 +369,6 @@ class TaxonomyController
             $data['country_ref']['restricted'] = $country->pivot->restricted;
             $data['country_ref']['allochthonous'] = $country->pivot->allochthonous;
             $data['country_ref']['invasive'] = $country->pivot->invasive;
-
-            Log::info('Sent for update...', $data);
 
             dispatch(new SendTaxonSyncRequest($country->url, '/api/taxonomy/sync', $data));
         }
